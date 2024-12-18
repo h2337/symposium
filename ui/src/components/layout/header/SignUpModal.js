@@ -64,7 +64,7 @@ function SignUpModal() {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Sign up
+        <i className="fa fa-user-plus"></i> Sign up
       </Button>
 
       <Modal show={show} onHide={handleClose}>

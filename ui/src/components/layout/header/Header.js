@@ -20,59 +20,6 @@ function Header(props) {
     history.push("/admin");
   }
 
-  let userButtons;
-  if (props.username.length > 0 && props.token.length > 0) {
-    if (props.access == "99")
-      userButtons = ( // TODO: Refactor this
-        <Dropdown drop="left">
-          <Dropdown.Toggle variant="primary">
-            <img
-              src={process.env.API_URL + "/avatars/" + props.userId + ".jpg"}
-              width="25"
-              height="25"
-              style={{ borderRadius: "50%" }}
-            />
-            &nbsp;
-            {props.username}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={handleAdminPanelClick}>
-              Admin panel
-            </Dropdown.Item>
-            <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      );
-    else
-      userButtons = (
-        <Dropdown drop="left">
-          <Dropdown.Toggle variant="primary">
-            <img
-              src={process.env.API_URL + "/avatars/" + props.userId + ".jpg"}
-              width="25"
-              height="25"
-              style={{ borderRadius: "50%" }}
-            />
-            &nbsp;
-            {props.username}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      );
-  } else {
-    userButtons = (
-      <>
-        <SignUpModal></SignUpModal>
-        &nbsp;
-        <SignInModal></SignInModal>
-      </>
-    );
-  }
-
   return (
     <>
       <Navbar bg="light">
@@ -80,7 +27,37 @@ function Header(props) {
           <Link to="/">Symposium</Link>
         </Navbar.Brand>
         <Nav className="justify-content-end" style={{ width: "100%" }}>
-          {userButtons}
+          {props.username.length > 0 && props.token.length > 0 ? (
+            <Dropdown drop="left">
+              <Dropdown.Toggle variant="primary">
+                <img
+                  src={
+                    process.env.API_URL + "/avatars/" + props.userId + ".jpg"
+                  }
+                  width="25"
+                  height="25"
+                  style={{ borderRadius: "50%" }}
+                />
+                &nbsp;
+                {props.username}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {props.access == "99" && (
+                  <Dropdown.Item onClick={handleAdminPanelClick}>
+                    Admin panel
+                  </Dropdown.Item>
+                )}
+                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : (
+            <>
+              <SignUpModal></SignUpModal>
+              &nbsp;
+              <SignInModal></SignInModal>
+            </>
+          )}
         </Nav>
       </Navbar>
     </>

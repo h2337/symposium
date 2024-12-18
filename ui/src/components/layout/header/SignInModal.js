@@ -53,7 +53,7 @@ function SignInModal(props) {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Sign in
+        <i className="fa fa-sign-in"></i> Sign in
       </Button>
 
       <Modal show={show} onHide={handleClose}>

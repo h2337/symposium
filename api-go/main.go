@@ -18,6 +18,7 @@ func main() {
 	router.HandleFunc("/token", handlers.CreateTokenHandler).Methods("POST")
 	router.HandleFunc("/account", handlers.CreateAccountHandler).Methods("POST")
 	router.HandleFunc("/category", handlers.GetCategories).Methods("GET")
+	router.HandleFunc("/category", handlers.CreateCategory).Methods("POST")
 	server := &http.Server{
 		Handler:      router,
 		Addr:         config.Config.HttpServer.ListenAddress,

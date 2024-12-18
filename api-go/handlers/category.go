@@ -57,13 +57,30 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, fmt.Sprintf(`{"error": "Failed to parse the token, error: %s"}`, err.Error()))
 		return
 	}
-	var userID string
+	var userID float64
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userID = claims["userID"].(string)
+		userID = claims["userID"].(float64)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "Invalid token"}`)
 		return
 	}
-	fmt.Println(userID)
+	user, err := repositories.GetUserByUserID(uint32(userID))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to fetch the user from database"}`)
+		return
+	}
+	if user.Access != 99 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "User lacks the necessary privileges to create a category"}`)
+		return
+	}
+	err = repositories.CreateCategory(ccr.Name, ccr.Color, ccr.Icon)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to create the category"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

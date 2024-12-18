@@ -25,3 +25,13 @@ func GetCategories() ([]models.Category, error) {
 	}
 	return categories, nil
 }
+
+func CreateCategory(name string, color string, icon string) error {
+	sql := "INSERT INTO categories (name, color, icon) VALUES ($1, $2, $3)"
+	_, err := database.Database.Exec(sql, name, color, icon)
+	if err != nil {
+		logger.Log.Error("Failed to INSERT a new category, error: " + err.Error())
+		return err
+	}
+	return nil
+}

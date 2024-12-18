@@ -178,15 +178,14 @@ function Feed(props) {
           <Col lg="10">
             {isMobile && (
               <>
-                {isLoggedIn && (
-                  <div style={{ float: "right" }}>
-                    <br></br>
-                    <NewThreadModal categories={categories}></NewThreadModal>
-                    <br></br>
-                  </div>
-                )}
-                <br></br>
-                <DropdownButton title="Categories">
+                <DropdownButton
+                  title="Categories"
+                  style={{
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    display: "inline-block",
+                  }}
+                >
                   {categories.map((v, i) => (
                     <Dropdown.Item
                       key={i}
@@ -205,6 +204,17 @@ function Feed(props) {
                     </Dropdown.Item>
                   ))}
                 </DropdownButton>
+                {isLoggedIn && (
+                  <div
+                    style={{
+                      float: "right",
+                      marginTop: "20px",
+                      marginBotton: "20px",
+                    }}
+                  >
+                    <NewThreadModal categories={categories}></NewThreadModal>
+                  </div>
+                )}
               </>
             )}
 

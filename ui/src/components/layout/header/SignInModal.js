@@ -23,14 +23,14 @@ function SignInModal(props) {
             let responseBodyObject = JSON.parse(responseBody);
             props.onLogin(
               username,
-              responseBodyObject.id,
-              responseBodyObject.email,
-              responseBodyObject.access,
+              responseBodyObject.user.id,
+              responseBodyObject.user.email,
+              responseBodyObject.user.access,
               responseBodyObject.token
             );
           });
         } else {
-          toast.error("Login failed, try again.");
+          toast.error("Login failed, try again."); // TODO: Show detailed error
         }
       })
       .catch((e) => toast.error("Login failed, try again."));

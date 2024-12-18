@@ -59,15 +59,11 @@ func GetThread(id uint32) (*models.Thread, error) {
 }
 
 func CreateThread(userID uint32, title string, categoryID uint32) (int64, error) {
-	sql := "INSERT INTO threads (user_id, title, category_id) VALUES ($1, $2, $3)"
-	res, err := database.Database.Exec(sql, userID, title, categoryID)
+	sql := "INSERT INTO threads (user_id, title, category_id) VALUES ($1, $2, $3) RETURNING id"
+	var id int64
+	err := database.Database.QueryRow(sql, userID, title, categoryID).Scan(&id)
 	if err != nil {
 		logger.Log.Error("Failed to INSERT a new thread, error: " + err.Error())
-		return 0, err
-	}
-	id, err := res.LastInsertId()
-	if err != nil {
-		logger.Log.Error("Failed to get ID of newly INSERTed thread, error: " + err.Error())
 		return 0, err
 	}
 	return id, nil

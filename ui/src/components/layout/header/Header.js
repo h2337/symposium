@@ -23,7 +23,7 @@ function Header(props) {
   let userButtons;
   if (props.username.length > 0 && props.token.length > 0) {
     if (props.access == "99")
-      userButtons = (
+      userButtons = ( // TODO: Refactor this
         <Dropdown drop="left">
           <Dropdown.Toggle variant="primary">
             <img
@@ -46,9 +46,22 @@ function Header(props) {
       );
     else
       userButtons = (
-        <Button variant="primary" onClick={handleLogout}>
-          Log out
-        </Button>
+        <Dropdown drop="left">
+          <Dropdown.Toggle variant="primary">
+            <img
+              src={process.env.API_URL + "/avatars/" + props.userId + ".jpg"}
+              width="25"
+              height="25"
+              style={{ borderRadius: "50%" }}
+            />
+            &nbsp;
+            {props.username}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       );
   } else {
     userButtons = (

@@ -3,9 +3,9 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jafarlihi/symposium/backend/config"
+	"github.com/jafarlihi/symposium/backend/models"
 	"github.com/jafarlihi/symposium/backend/repositories"
 	"golang.org/x/crypto/bcrypt"
 	"io"
@@ -16,6 +16,11 @@ type tokenCreationRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type tokenCreationResponse struct {
+	Token string      `json:"token"`
+	User  models.User `json:"user"`
 }
 
 func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +68,16 @@ func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Failed to create token"}`)
 		return
 	}
+	var response tokenCreationResponse
+	response.Token = tokenString
+	response.User = *user
+	response.User.Password = ""
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to marshal the response to JSON"}`)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, fmt.Sprintf(`{"token": "%s"}`, tokenString))
+	io.WriteString(w, string(jsonResponse))
 }

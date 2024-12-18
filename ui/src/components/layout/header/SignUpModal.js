@@ -37,7 +37,7 @@ function SignUpModal() {
           handleClose();
           toast.success("Successfully registered!");
         } else {
-          toast.error("Registration failed, try again.");
+          toast.error("Registration failed, try again."); // TODO: Show detailed error
         }
       })
       .catch((e) => toast.error("Registration failed, try again."));

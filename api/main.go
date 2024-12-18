@@ -25,6 +25,7 @@ func main() {
 	router.HandleFunc("/thread/{id}", handlers.GetThread).Methods("GET")
 	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	cors := gorillaHandlers.AllowedOrigins([]string{"*"})
 	logger.Log.Info("Starting HTTP server listening at " + config.Config.HttpServer.Port)
 	logger.Log.Critical(http.ListenAndServe(":"+config.Config.HttpServer.Port, gorillaHandlers.CORS(cors)(router)))

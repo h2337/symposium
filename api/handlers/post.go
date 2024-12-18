@@ -1,0 +1,106 @@
+package handlers
+
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/jafarlihi/symposium/backend/config"
+	"github.com/jafarlihi/symposium/backend/repositories"
+	"io"
+	"net/http"
+	"strconv"
+)
+
+func GetPosts(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+	if queryParams["page"][0] == "" || queryParams["pageSize"][0] == "" || queryParams["threadID"][0] == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "page, pageSize, and/or threadID query parameters are missing"}`)
+		return
+	}
+	page, err := strconv.ParseUint(queryParams["page"][0], 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "page query parameter couldn't be parsed as an integer"}`)
+		return
+	}
+	pageSize, err := strconv.ParseUint(queryParams["pageSize"][0], 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "pageSize query parameter couldn't be parsed as an integer"}`)
+		return
+	}
+	threadID, err := strconv.ParseUint(queryParams["threadID"][0], 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "threadID query parameter couldn't be parsed as an integer"}`)
+		return
+	}
+	posts, err := repositories.GetPosts(uint32(page), uint32(pageSize), uint32(threadID))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to get the posts"}`)
+		return
+	}
+	jsonResult, err := json.Marshal(posts)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to marshal the result to JSON"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, string(jsonResult))
+}
+
+type postCreationRequest struct {
+	Token    string `json:"token"`
+	ThreadID uint32 `json:"threadID"`
+	Content  string `json:"content"`
+}
+
+func CreatePost(w http.ResponseWriter, r *http.Request) {
+	var pcr postCreationRequest
+	err := json.NewDecoder(r.Body).Decode(&pcr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
+		return
+	}
+	if pcr.Token == "" || pcr.ThreadID == 0 || pcr.Content == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Token, threadID, and/or content field(s) is/are missing"}`)
+		return
+	}
+	token, err := jwt.Parse(pcr.Token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.Jwt.SigningSecret), nil
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
+		return
+	}
+	var userID float64
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID = claims["userID"].(float64)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Invalid token"}`)
+		return
+	}
+	_, err = repositories.GetThread(pcr.ThreadID)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Thread with the provided threadID does not exist"}`)
+		return
+	}
+	_, err = repositories.CreatePost(uint32(userID), pcr.ThreadID, pcr.Content)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to create the post"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

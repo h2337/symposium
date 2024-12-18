@@ -19,9 +19,12 @@ func main() {
 	router.HandleFunc("/account", handlers.CreateAccountHandler).Methods("POST")
 	router.HandleFunc("/category", handlers.GetCategories).Methods("GET")
 	router.HandleFunc("/category", handlers.CreateCategory).Methods("POST")
+	router.HandleFunc("/category", handlers.DeleteCategory).Methods("DELETE")
 	router.HandleFunc("/thread", handlers.CreateThread).Methods("POST")
 	router.HandleFunc("/thread", handlers.GetThreads).Methods("GET")
 	router.HandleFunc("/thread/{id}", handlers.GetThread).Methods("GET")
+	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
+	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
 	server := &http.Server{
 		Handler:      router,
 		Addr:         config.Config.HttpServer.ListenAddress,

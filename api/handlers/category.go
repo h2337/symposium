@@ -27,6 +27,32 @@ func GetCategories(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, string(jsonResult))
 }
 
+type categoryDeletionRequest struct {
+	ID uint32 `json:"id"`
+}
+
+func DeleteCategory(w http.ResponseWriter, r *http.Request) {
+	var cdr categoryDeletionRequest
+	err := json.NewDecoder(r.Body).Decode(&cdr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
+		return
+	}
+	if cdr.ID == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "CategoryID parameter is missing"}`)
+		return
+	}
+	err = repositories.DeleteCategory(cdr.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to delete the category"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 type categoryCreationRequest struct {
 	Token string `json:"token"`
 	Name  string `json:"name"`

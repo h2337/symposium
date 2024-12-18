@@ -24,7 +24,7 @@ func GetThread(w http.ResponseWriter, r *http.Request) {
 	thread, err := repositories.GetThread(uint32(id))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, `{"error": "Failed to get the thread"`)
+		io.WriteString(w, `{"error": "Failed to get the thread"}`)
 		return
 	}
 	jsonResult, err := json.Marshal(thread)
@@ -100,7 +100,7 @@ func CreateThread(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, fmt.Sprintf(`{"error": "Failed to parse the token, error: %s"}`, err.Error()))
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
 		return
 	}
 	var userID float64

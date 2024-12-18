@@ -40,7 +40,7 @@ function Feed(props) {
 
   useEffect(() => {
     let threadsSocket = new WebSocket(
-      "ws://" + process.env.API_URL + "/ws/thread"
+      "ws://" + process.env.API_URL + "/api/ws/thread"
     );
     threadsSocket.onmessage = function (event) {
       Feed.websocketNewThread(JSON.parse(event.data));

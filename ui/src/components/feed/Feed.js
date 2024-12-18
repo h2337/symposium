@@ -279,7 +279,15 @@ function Feed(props) {
                               }
                             </span>
                           </Badge>{" "}
-                          <i className="fa fa-comments"></i> {v.postCount}
+                          <i className="fa fa-comments"></i>{" "}
+                          <span
+                            style={{
+                              fontSize: "0.8em",
+                              fontWeight: "bolder",
+                            }}
+                          >
+                            {v.postCount}
+                          </span>
                         </div>
                       </Row>
                     </Container>

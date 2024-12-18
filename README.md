@@ -7,7 +7,7 @@ Demo / support forums: http://symposium.sytes.net/
 - Profiles
 - Infinite scroll
 - Real-time updates
-- Notifications *(coming soon)*
+- Notifications
 - Mentions *(coming soon)*
 - Replies *(coming soon)*
 - Real-time chat *(coming soon)*

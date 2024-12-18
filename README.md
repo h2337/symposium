@@ -8,19 +8,8 @@ Demo / support forums: http://symposium.sytes.net/
 - Infinite scroll
 - Real-time updates
 - Notifications
-- Mentions *(coming soon)*
-- Replies *(coming soon)*
-- Real-time chat *(coming soon)*
 ### Technologies
-- Go
-- React
-- Redux
-- Webpack
-- Bootstrap
-- JWT
-- RESTful API
-- WebSocket
-- PostgreSQL
+Go, React, Redux, Webpack, Bootstrap, JWT, RESTful API, WebSocket, PostgreSQL
 ### Installation
 Write down PostgreSQL details, JWT signing secret, and port to `./api/config.json`.
 

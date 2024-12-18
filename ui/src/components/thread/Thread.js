@@ -146,7 +146,7 @@ function Thread(props) {
         <Container>
           <Row>
             <Col xs="2"></Col>
-            <Col xs="10">
+            <Col lg="10">
               <Badge
                 style={{
                   backgroundColor: "#" + category.color,
@@ -185,7 +185,7 @@ function Thread(props) {
                 />
               )}
             </Col>
-            <Col xs="10">
+            <Col lg="10">
               <InfiniteScroll
                 loadMore={loadPosts}
                 hasMore={hasMorePosts}

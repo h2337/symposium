@@ -175,7 +175,7 @@ function Feed(props) {
               ))}
             </Col>
           )}
-          <Col xs="10">
+          <Col lg="10">
             {isMobile && (
               <>
                 {isLoggedIn && (

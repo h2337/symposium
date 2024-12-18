@@ -32,7 +32,6 @@ CREATE TABLE posts (
     post_number integer NOT NULL,
     content text NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT now(),
-    updated_at timestamp without time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (thread_id) REFERENCES threads (id),
     FOREIGN KEY (user_id) REFERENCES users (id)

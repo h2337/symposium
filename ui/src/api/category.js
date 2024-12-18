@@ -1,4 +1,4 @@
-export function loadCategories() {
+export function getCategories() {
   return fetch(process.env.API_URL + "/category", {
     method: "GET",
   });

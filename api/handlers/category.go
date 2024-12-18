@@ -32,7 +32,6 @@ type categoryDeletionRequest struct {
 }
 
 func DeleteCategory(w http.ResponseWriter, r *http.Request) {
-	// TODO: Delete all threads/posts
 	var cdr categoryDeletionRequest
 	err := json.NewDecoder(r.Body).Decode(&cdr)
 	if err != nil {
@@ -44,6 +43,26 @@ func DeleteCategory(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "CategoryID parameter is missing"}`)
 		return
+	}
+	threads, err := repositories.GetAllThreadsByCategoryID(cdr.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to fetch the threads of the category"}`)
+		return
+	}
+	for _, thread := range threads {
+		err := repositories.DeletePostsByThreadID(thread.ID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, `{"error": "Failed to delete the posts of a thread in the category"}`)
+			return
+		}
+		err = repositories.DeleteThread(thread.ID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, `{"error": "Failed to delete a thread of the category"}`)
+			return
+		}
 	}
 	err = repositories.DeleteCategory(cdr.ID)
 	if err != nil {
@@ -92,7 +111,7 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Invalid token"}`)
 		return
 	}
-	user, err := repositories.GetUserByUserID(uint32(userID))
+	user, err := repositories.GetUser(uint32(userID))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to fetch the user from database"}`)

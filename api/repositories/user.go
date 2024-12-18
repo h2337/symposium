@@ -6,9 +6,9 @@ import (
 	"github.com/jafarlihi/symposium/backend/models"
 )
 
-func GetUserByUserID(userID uint32) (*models.User, error) {
+func GetUser(id uint32) (*models.User, error) {
 	sql := "SELECT id, username, email, password, access FROM users where id = $1"
-	row := database.Database.QueryRow(sql, userID)
+	row := database.Database.QueryRow(sql, id)
 	var user models.User
 	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Access)
 	if err != nil {

@@ -37,7 +37,7 @@ function CreateNewCategoryModal(props) {
     createCategory(props.token, name, selectedColor)
       .then((r) => {
         if (r.status === 200) {
-          props.createCallback();
+          props.postCreateCallback();
           handleCreateNewCategoryModalClose();
           toast.success("New category created!");
         } else {

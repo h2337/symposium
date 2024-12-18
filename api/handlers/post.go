@@ -36,7 +36,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "threadID query parameter couldn't be parsed as an integer"}`)
 		return
 	}
-	posts, err := repositories.GetPosts(uint32(threadID), uint32(page), uint32(pageSize))
+	posts, err := repositories.GetPostsByThreadID(uint32(threadID), uint32(page), uint32(pageSize))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to get the posts"}`)

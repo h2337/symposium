@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col, Modal, Form } from "react-bootstrap";
 import { connect } from "react-redux";
-import { loadCategories } from "../../api/category";
+import { getCategories } from "../../api/category";
 import { toast } from "react-toastify";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import CreateNewCategoryModal from "./CreateNewCategoryModal";
@@ -11,11 +11,11 @@ function Categories(props) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    getCategories();
+    loadCategories();
   }, []);
 
-  function getCategories() {
-    loadCategories()
+  function loadCategories() {
+    getCategories()
       .then((r) => {
         if (r.status === 200) {
           r.text().then((responseBody) => {
@@ -35,7 +35,7 @@ function Categories(props) {
       <Row>
         <Col xs="10">
           <br></br>
-          <CreateNewCategoryModal createCallback={getCategories} />
+          <CreateNewCategoryModal postCreateCallback={loadCategories} />
           <br></br>
           <br></br>
           {categories.map((v, i) => (
@@ -47,14 +47,10 @@ function Categories(props) {
                 ></i>{" "}
                 {v.name}
                 <div style={{ float: "right" }}>
-                  <Button disabled variant="primary">
-                    Edit
-                  </Button>
-                  &nbsp;
                   <DeleteCategoryModal
                     name={v.name}
                     id={v.id}
-                    postDeleteCallback={getCategories}
+                    postDeleteCallback={loadCategories}
                   />
                 </div>
               </div>

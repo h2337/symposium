@@ -6,15 +6,14 @@ import {
   Container,
   Row,
   Col,
-  Spinner,
   Badge,
   DropdownButton,
   Dropdown,
 } from "react-bootstrap";
 import { createUseStyles } from "react-jss";
 import { useEffect } from "react";
-import { loadCategories } from "../../api/category";
-import { loadThreads } from "../../api/thread";
+import { getCategories } from "../../api/category";
+import { getThreads } from "../../api/thread";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroller";
 import { Link, useParams, useHistory } from "react-router-dom";
@@ -39,13 +38,13 @@ function Feed(props) {
   }
 
   async function initialLoad() {
-    await getCategories();
-    getThreads();
+    await loadCategories();
+    loadThreads();
   }
 
-  function getCategories() {
+  function loadCategories() {
     return new Promise((resolve) => {
-      loadCategories()
+      getCategories()
         .then((r) => {
           if (r.status === 200) {
             r.text().then((responseBody) => {
@@ -83,8 +82,8 @@ function Feed(props) {
     },
   })();
 
-  function getThreads() {
-    loadThreads(categoryID, Feed.threadPage++, 20)
+  function loadThreads() {
+    getThreads(categoryID, Feed.threadPage++, 20)
       .then((r) => {
         if (r.status === 200) {
           r.text().then((responseBody) => {
@@ -173,7 +172,7 @@ function Feed(props) {
 
             <br></br>
             <InfiniteScroll
-              loadMore={getThreads}
+              loadMore={loadThreads}
               hasMore={hasMoreThreads}
               initialLoad={false}
               threshold={1}

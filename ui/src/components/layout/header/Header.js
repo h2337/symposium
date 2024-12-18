@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Button, Dropdown } from "react-bootstrap";
+import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";

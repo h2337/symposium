@@ -1,4 +1,4 @@
-export function loadThreads(categoryID, page, pageSize) {
+export function getThreads(categoryID, page, pageSize) {
   let url = new URL(process.env.API_URL + "/thread");
   let params;
   if (categoryID !== undefined) params = { categoryID, page, pageSize };
@@ -9,7 +9,7 @@ export function loadThreads(categoryID, page, pageSize) {
   });
 }
 
-export function loadThread(id) {
+export function getThread(id) {
   return fetch(process.env.API_URL + "/thread/" + id, {
     method: "GET",
   });

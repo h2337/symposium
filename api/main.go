@@ -26,6 +26,7 @@ func main() {
 	router.HandleFunc("/thread/{id}", handlers.GetThread).Methods("GET")
 	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
+	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
 	origins := gorillaHandlers.AllowedOrigins([]string{"*"})

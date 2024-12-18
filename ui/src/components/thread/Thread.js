@@ -3,18 +3,25 @@ import { Spinner, Container, Row, Col, Badge, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { loadThread } from "../../api/thread";
-import { loadCategories } from "../../api/category";
+import { getThread } from "../../api/thread";
+import { getPosts } from "../../api/post";
+import { getCategories } from "../../api/category";
 import { LOAD_CATEGORIES } from "../../redux/actionTypes";
+import { toast } from "react-toastify";
+import InfiniteScroll from "react-infinite-scroller";
+import DOMPurify from "dompurify";
 
 function Thread(props) {
+  const [posts, setPosts] = useState([]);
+  const [hasMorePosts, setHasMorePosts] = useState(true);
   const [thread, setThread] = useState(undefined);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(undefined);
-  const { threadId } = useParams();
+  const { threadID } = useParams();
   useEffect(() => {
+    Thread.postPage = 0;
     if (props.thread === undefined) {
-      loadThread(threadId)
+      getThread(threadID)
         .then((r) => {
           if (r.status === 200) {
             r.text().then((responseBody) => {
@@ -30,13 +37,13 @@ function Thread(props) {
       setThread(props.thread);
     }
     if (props.categories === undefined || props.categories.length === 0) {
-      loadCategories()
+      getCategories()
         .then((r) => {
           if (r.status === 200) {
             r.text().then((responseBody) => {
               let responseBodyObject = JSON.parse(responseBody);
-              setCategories(responseBodyObject.categories);
-              props.onCategoryLoad(responseBodyObject.categories);
+              setCategories(responseBodyObject);
+              props.onCategoryLoad(responseBodyObject);
             });
           } else {
             toast.error("Failed to load the categories");
@@ -49,11 +56,31 @@ function Thread(props) {
   }, []);
 
   useEffect(() => {
-    if (categories !== undefined && categories.length > 0)
+    if (
+      categories !== undefined &&
+      categories.length > 0 &&
+      thread !== undefined
+    )
       setCategory(
-        categories.find((category) => category.id === thread.categoryId)
+        categories.find((category) => category.id === thread.categoryID)
       );
   }, [categories]);
+
+  function loadPosts() {
+    getPosts(thread.id, Thread.postPage++, 20)
+      .then((r) => {
+        if (r.status === 200) {
+          r.text().then((responseBody) => {
+            let responseBodyObject = JSON.parse(responseBody);
+            if (responseBodyObject.length === 0) setHasMorePosts(false);
+            setPosts((posts) => [...posts, ...responseBodyObject]);
+          });
+        } else {
+          toast.error("Failed to fetch posts");
+        }
+      })
+      .catch((e) => toast.error("Failed to fetch posts."));
+  }
 
   return (
     <>
@@ -63,30 +90,54 @@ function Thread(props) {
           animation="border"
         />
       ) : (
-        <>
-          <Container>
-            <Row>
-              <Col style={{ backgroundColor: "#" + category.color }}>
-                <br></br>
-                <Badge
-                  pill
-                  style={{ margin: "auto", display: "table" }}
-                  variant="light"
-                >
-                  {category.name}
-                </Badge>
-                <h3 style={{ margin: "auto", display: "table" }}>
-                  <Badge variant="light">{thread.title}</Badge>
-                </h3>
-                <br></br>
-              </Col>
-            </Row>
-          </Container>
+        <Container>
+          <Row>
+            <Col>
+              <Badge variant="light">
+                <i
+                  className="fa fa-circle"
+                  style={{ color: "#" + category.color, fontSize: 10 }}
+                ></i>{" "}
+                <span>{category.name}</span>
+              </Badge>
+              <h3>{thread.title}</h3>
+            </Col>
+          </Row>
           <br></br>
-          <Card>
-            <Card.Body>Some text</Card.Body>
-          </Card>
-        </>
+          <Row>
+            <InfiniteScroll
+              loadMore={loadPosts}
+              hasMore={hasMorePosts}
+              initialLoad={true}
+              threshold={1}
+              loader={<div></div>}
+              style={{ width: "100%" }}
+            >
+              {posts.map((v, i) => (
+                <>
+                  <Card style={{ width: "100%" }}>
+                    <Card.Body>
+                      <img
+                        src={
+                          process.env.API_URL + "/avatars/" + v.userID + ".jpg"
+                        }
+                        width="50"
+                        height="50"
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(v.content),
+                        }}
+                      ></div>
+                    </Card.Body>
+                  </Card>
+                  <hr></hr>
+                </>
+              ))}
+            </InfiniteScroll>
+          </Row>
+        </Container>
       )}
     </>
   );

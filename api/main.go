@@ -14,6 +14,7 @@ func main() {
 	logger.InitLogger()
 	config.InitConfig()
 	database.InitDatabase()
+
 	router := mux.NewRouter()
 	router.HandleFunc("/token", handlers.CreateTokenHandler).Methods("POST")
 	router.HandleFunc("/account", handlers.CreateAccountHandler).Methods("POST")
@@ -26,7 +27,11 @@ func main() {
 	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
-	cors := gorillaHandlers.AllowedOrigins([]string{"*"})
+
+	origins := gorillaHandlers.AllowedOrigins([]string{"*"})
+	headers := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With"})
+	methods := gorillaHandlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PATCH"})
+
 	logger.Log.Info("Starting HTTP server listening at " + config.Config.HttpServer.Port)
-	logger.Log.Critical(http.ListenAndServe(":"+config.Config.HttpServer.Port, gorillaHandlers.CORS(cors)(router)))
+	logger.Log.Critical(http.ListenAndServe(":"+config.Config.HttpServer.Port, gorillaHandlers.CORS(origins, headers, methods)(router)))
 }

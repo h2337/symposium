@@ -11,7 +11,6 @@ CREATE TABLE categories (
     id serial NOT NULL,
     name character varying NOT NULL UNIQUE,
     color character varying(6) NOT NULL,
-    icon character varying,
     PRIMARY KEY (id)
 );
 

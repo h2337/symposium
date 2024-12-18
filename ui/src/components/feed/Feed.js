@@ -68,6 +68,11 @@ function Feed(props) {
     setHasMoreThreads(true);
   }
 
+  function newThreadCallback() {
+    resetFeed();
+    initialLoad();
+  }
+
   const classes = createUseStyles({
     feedThreadBox: {
       width: "100%",
@@ -79,7 +84,7 @@ function Feed(props) {
   })();
 
   function getThreads() {
-    loadThreads(categoryID, Feed.threadPage++, 10)
+    loadThreads(categoryID, Feed.threadPage++, 20)
       .then((r) => {
         if (r.status === 200) {
           r.text().then((responseBody) => {
@@ -105,13 +110,13 @@ function Feed(props) {
       <Container fluid>
         <Row>
           {!isMobile && (
-            <Col xs="1">
+            <Col xs="2">
               {isLoggedIn && (
                 <>
                   <br></br>
                   <NewThread
                     categories={categories}
-                    postCreateCallback={resetFeed}
+                    postCreateCallback={newThreadCallback}
                   ></NewThread>
                   <br></br>
                 </>
@@ -126,30 +131,16 @@ function Feed(props) {
                     >
                       <i
                         className="fa fa-circle"
-                        style={{
-                          color: "#" + v.color,
-                          fontSize: 10,
-                        }}
+                        style={{ color: "#" + v.color, fontSize: 10 }}
                       ></i>{" "}
-                      {v.name.length < 11 && v.name}
-                      {v.name.length > 10 &&
-                        [...v.name].map((v, i) => {
-                          if (i % 10 === 0)
-                            return (
-                              <>
-                                <br></br>
-                                {v}
-                              </>
-                            );
-                          return <>{v}</>;
-                        })}
+                      <span>{v.name}</span>
                     </Link>
                   </Badge>
                 </div>
               ))}
             </Col>
           )}
-          <Col xs="11">
+          <Col xs="10">
             {isMobile && (
               <>
                 {isLoggedIn && (
@@ -186,12 +177,7 @@ function Feed(props) {
               hasMore={hasMoreThreads}
               initialLoad={false}
               threshold={1}
-              loader={
-                <Spinner
-                  style={{ margin: "auto", display: "table" }}
-                  animation="border"
-                />
-              }
+              loader={<div></div>}
             >
               {threads.map((v, i) => (
                 <div key={i}>

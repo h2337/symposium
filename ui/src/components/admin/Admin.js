@@ -4,8 +4,8 @@ import Categories from "./Categories";
 
 function Admin(props) {
   return (
-    <Tabs defaultActiveKey="general">
-      <Tab eventKey="general" title="General"></Tab>
+    <Tabs defaultActiveKey="categories">
+      <Tab eventKey="general" title="General" disabled></Tab>
       <Tab eventKey="categories" title="Categories">
         <Categories />
       </Tab>

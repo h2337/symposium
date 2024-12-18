@@ -32,6 +32,7 @@ type categoryDeletionRequest struct {
 }
 
 func DeleteCategory(w http.ResponseWriter, r *http.Request) {
+	// TODO: Delete all threads/posts
 	var cdr categoryDeletionRequest
 	err := json.NewDecoder(r.Body).Decode(&cdr)
 	if err != nil {
@@ -57,7 +58,6 @@ type categoryCreationRequest struct {
 	Token string `json:"token"`
 	Name  string `json:"name"`
 	Color string `json:"color"`
-	Icon  string `json:"icon"`
 }
 
 func CreateCategory(w http.ResponseWriter, r *http.Request) {
@@ -103,7 +103,7 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "User lacks the necessary privileges to create a category"}`)
 		return
 	}
-	_, err = repositories.CreateCategory(ccr.Name, ccr.Color, ccr.Icon)
+	_, err = repositories.CreateCategory(ccr.Name, ccr.Color)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to create the category"}`)

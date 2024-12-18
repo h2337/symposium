@@ -29,4 +29,7 @@ func InitDatabase() {
 		return
 	}
 	_, err = Database.Exec(string(schemaBytes))
+	if err != nil {
+		logger.Log.Warningf("Failed to (re-)initialize the schema, error: " + err.Error())
+	}
 }

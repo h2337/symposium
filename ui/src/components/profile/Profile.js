@@ -117,7 +117,7 @@ function Profile(props) {
                   ></div>
                 </Card.Body>
               </Card>
-              <hr></hr>
+              <br></br>
             </>
           ))}
         </InfiniteScroll>

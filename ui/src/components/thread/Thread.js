@@ -115,7 +115,7 @@ function Thread(props) {
           animation="border"
         />
       ) : (
-        <Container fluid>
+        <Container>
           <Row>
             <Col>
               <Badge variant="light">
@@ -181,7 +181,7 @@ function Thread(props) {
                         ></div>
                       </Card.Body>
                     </Card>
-                    <hr></hr>
+                    <br></br>
                   </>
                 ))}
               </InfiniteScroll>

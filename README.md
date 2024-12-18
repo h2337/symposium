@@ -1,6 +1,4 @@
 ## Symposium
-
-Demo / support forums: http://symposium.sytes.net/
 ### Features
 - Threads and posts
 - Categories

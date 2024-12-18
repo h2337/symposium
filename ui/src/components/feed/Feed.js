@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import NewThread from "./NewThread";
 import { LOGOUT, LOAD_CATEGORIES } from "../../redux/actionTypes";
-import { Container, Row, Col, Spinner, Badge } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Spinner,
+  Badge,
+  DropdownButton,
+  Dropdown,
+} from "react-bootstrap";
 import { createUseStyles } from "react-jss";
 import { useEffect } from "react";
 import { loadCategories } from "../../api/category";
@@ -27,6 +35,10 @@ function Feed(props) {
   useEffect(() => {
     resetFeed();
   }, [categoryId]);
+
+  useEffect(() => {
+    if (threads.length === 0) getThreads();
+  }, [threads]);
 
   let isLoggedIn = false; // TODO: Does this belong here?
   if (props.username.length > 0 && props.token.length > 0) {
@@ -138,13 +150,10 @@ function Feed(props) {
                   </>
                 )}
                 <br></br>
-                {categories.map((v, i) => (
-                  <div key={i}>
-                    <Badge variant={v.id == categoryId ? "primary" : "light"}>
-                      <Link
-                        to={"/category/" + v.id}
-                        style={{ color: "black", textDecoration: "none" }}
-                      >
+                <DropdownButton title="Categories">
+                  {categories.map((v, i) => (
+                    <Dropdown.Item key={i} href={"/category/" + v.id}>
+                      <Badge variant={v.id == categoryId ? "primary" : "light"}>
                         <i
                           className="fa fa-circle"
                           style={{
@@ -153,10 +162,10 @@ function Feed(props) {
                           }}
                         ></i>{" "}
                         {v.name}
-                      </Link>
-                    </Badge>
-                  </div>
-                ))}
+                      </Badge>
+                    </Dropdown.Item>
+                  ))}
+                </DropdownButton>
               </>
             )}
 

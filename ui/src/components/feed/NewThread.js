@@ -35,7 +35,10 @@ function NewThread(props) {
   }
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setEditorValue("");
+    setShow(true);
+  };
 
   return (
     <>
@@ -64,6 +67,7 @@ function NewThread(props) {
                     as="select"
                     name="category"
                     onChange={handleChange}
+                    value={category}
                   >
                     {props.categories.map((category, i) => (
                       <option key={i}>{category.name}</option>

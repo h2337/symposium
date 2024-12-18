@@ -31,8 +31,11 @@ function Feed(props) {
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
   Feed.websocketNewThread = function (thread) {
-    if (threads.find((e) => e.id === thread.id) === undefined)
-      setThreads([JSON.parse(thread)].concat(threads));
+    if (
+      threads.find((e) => e.id === thread.id) === undefined &&
+      (categoryID === undefined || categoryID == thread.categoryID)
+    )
+      setThreads([thread].concat(threads));
   };
 
   useEffect(() => {
@@ -40,7 +43,7 @@ function Feed(props) {
       "ws://" + process.env.API_URL + "/ws/thread"
     );
     threadsSocket.onmessage = function (event) {
-      Feed.websocketNewThread(event.data);
+      Feed.websocketNewThread(JSON.parse(event.data));
     };
   }, []);
 

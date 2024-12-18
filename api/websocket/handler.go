@@ -21,7 +21,9 @@ func HandleWebsocket(w http.ResponseWriter, r *http.Request) {
 	defer connection.Close()
 	uuid := uuid.New()
 	threadChannel := make(chan *models.Thread)
+	connectionThreadChannelsMutex.Lock()
 	connectionThreadChannels[uuid.String()] = threadChannel
+	connectionThreadChannelsMutex.Unlock()
 	for {
 		thread := <-threadChannel
 		jsonThread, err := json.Marshal(thread)
@@ -31,7 +33,9 @@ func HandleWebsocket(w http.ResponseWriter, r *http.Request) {
 		}
 		err = connection.WriteMessage(1, jsonThread)
 		if err != nil {
+			connectionThreadChannelsMutex.Lock()
 			delete(connectionThreadChannels, uuid.String())
+			connectionThreadChannelsMutex.Unlock()
 		}
 	}
 }

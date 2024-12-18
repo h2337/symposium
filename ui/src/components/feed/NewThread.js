@@ -1,19 +1,37 @@
 import React, { useState } from "react";
-import { Button, Modal, Form, Dropdown } from "react-bootstrap";
+import { Button, Modal, Form, Dropdown, Col } from "react-bootstrap";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { createThread } from "../../api/thread";
+import { connect } from "react-redux";
+import { toast } from "react-toastify";
 
 function NewThread(props) {
   const [show, setShow] = useState(false);
   const [editorValue, setEditorValue] = useState("");
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
 
   function handleChange(event) {
-    setTitle(event.target.value);
+    if (event.target.name === "title") setTitle(event.target.value);
+    else if (event.target.name === "category") setCategory(event.target.value);
   }
 
   function handleSubmit() {
-    console.log(props.categories);
+    let categoryId;
+    let categoryObject = props.categories.find((c) => c.name === category);
+    if (categoryObject === undefined) categoryId = props.categories[0].id;
+    else categoryId = categoryObject.id;
+    createThread(props.token, title, editorValue, categoryId)
+      .then((r) => {
+        if (r.status === 200) {
+          handleClose();
+          toast.success("New thread created!");
+        } else {
+          toast.error("Failed to create a new thread, try again.");
+        }
+      })
+      .catch((e) => toast.error("Failed to create a new thread, try again."));
   }
 
   const handleClose = () => setShow(false);
@@ -32,29 +50,27 @@ function NewThread(props) {
         <Modal.Body>
           <Form>
             <Form.Group controlId="title">
-              <Form.Control
-                type="text"
-                placeholder="Enter title"
-                name="title"
-                onChange={handleChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Dropdown>
-                <Dropdown.Toggle variant="primary">Category</Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  {props.categories.map((category, i) => (
-                    <Dropdown.Item key={i}>
-                      <i
-                        className="fa fa-circle fa-xs"
-                        style={{ color: "#" + category.color, fontSize: 10 }}
-                      ></i>{" "}
-                      {category.name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+              <Form.Row>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter title"
+                    name="title"
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    as="select"
+                    name="category"
+                    onChange={handleChange}
+                  >
+                    {props.categories.map((category, i) => (
+                      <option key={i}>{category.name}</option>
+                    ))}
+                  </Form.Control>
+                </Col>
+              </Form.Row>
             </Form.Group>
           </Form>
           <ReactQuill
@@ -76,4 +92,10 @@ function NewThread(props) {
   );
 }
 
-export default NewThread;
+function mapStateToProps(state) {
+  return {
+    token: state.user.token,
+  };
+}
+
+export default connect(mapStateToProps)(NewThread);

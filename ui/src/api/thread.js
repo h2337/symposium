@@ -8,3 +8,10 @@ export function loadThreads(categoryId, page, pageSize) {
     method: "GET",
   });
 }
+
+export function createThread(token, title, content, categoryId) {
+  return fetch(process.env.API_URL + "/thread", {
+    method: "POST",
+    body: JSON.stringify({ token, title, content, categoryId }),
+  });
+}

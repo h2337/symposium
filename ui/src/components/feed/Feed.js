@@ -10,47 +10,54 @@ import { loadThreads } from "../../api/thread";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroller";
 import { Link, useParams } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 function Feed(props) {
   const [threads, setThreads] = useState([]);
   const [hasMoreThreads, setHasMoreThreads] = useState(true);
+  const [categories, setCategories] = useState([]);
   const { categoryId } = useParams();
+  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
 
   useEffect(() => {
-    getCategories();
-    getThreads();
+    Feed.threadPage = 0;
+    initialLoad();
   }, []);
 
   useEffect(() => {
     resetFeed();
   }, [categoryId]);
 
-  useEffect(() => {
-    if (threads.length === 0) getThreads();
-  }, [threads]);
-
   let isLoggedIn = false; // TODO: Does this belong here?
   if (props.username.length > 0 && props.token.length > 0) {
     isLoggedIn = true;
   }
 
+  async function initialLoad() {
+    await getCategories();
+    getThreads();
+  }
+
   function getCategories() {
-    loadCategories()
-      .then((r) => {
-        if (r.status === 200) {
-          r.text().then((responseBody) => {
-            let responseBodyObject = JSON.parse(responseBody);
-            props.onLoadCategories(responseBodyObject.categories); // TODO: Why Redux?
-          });
-        } else {
-          toast.error("Failed to load the categories");
-        }
-      })
-      .catch((e) => toast.error("Failed to load the categories"));
+    return new Promise((resolve) => {
+      loadCategories()
+        .then((r) => {
+          if (r.status === 200) {
+            r.text().then((responseBody) => {
+              let responseBodyObject = JSON.parse(responseBody);
+              setCategories(responseBodyObject.categories);
+              resolve("Categories loaded");
+            });
+          } else {
+            toast.error("Failed to load the categories");
+          }
+        })
+        .catch((e) => toast.error("Failed to load the categories"));
+    });
   }
 
   function resetFeed() {
-    InfiniteScroll.threadPage = 0;
+    Feed.threadPage = 0;
     setThreads([]);
     setHasMoreThreads(true);
   }
@@ -66,12 +73,7 @@ function Feed(props) {
   })();
 
   function getThreads() {
-    if (
-      InfiniteScroll.threadPage === NaN ||
-      InfiniteScroll.threadPage === undefined
-    )
-      InfiniteScroll.threadPage = 0;
-    loadThreads(categoryId, InfiniteScroll.threadPage++, 10)
+    loadThreads(categoryId, Feed.threadPage++, 10)
       .then((r) => {
         if (r.status === 200) {
           r.text().then((responseBody) => {
@@ -91,36 +93,73 @@ function Feed(props) {
     <>
       <Container>
         <Row>
-          <Col xs="2">
-            {isLoggedIn && (
+          {!isMobile && (
+            <Col xs="2">
+              {isLoggedIn && (
+                <>
+                  <br></br>
+                  <NewThread
+                    categories={categories}
+                    postCreateCallback={resetFeed}
+                  ></NewThread>
+                  <br></br>
+                </>
+              )}
+              <br></br>
+              {categories.map((v, i) => (
+                <div key={i}>
+                  <Badge variant={v.id == categoryId ? "primary" : "light"}>
+                    <Link
+                      to={"/category/" + v.id}
+                      style={{ color: "black", textDecoration: "none" }}
+                    >
+                      <i
+                        className="fa fa-circle"
+                        style={{
+                          color: "#" + v.color,
+                          fontSize: 10,
+                        }}
+                      ></i>{" "}
+                      {v.name}
+                    </Link>
+                  </Badge>
+                </div>
+              ))}
+            </Col>
+          )}
+          <Col xs="10">
+            {isMobile && (
               <>
+                {isLoggedIn && (
+                  <>
+                    <br></br>
+                    <NewThread categories={categories}></NewThread>
+                    <br></br>
+                  </>
+                )}
                 <br></br>
-                <NewThread categories={props.categories}></NewThread>
-                <br></br>
+                {categories.map((v, i) => (
+                  <div key={i}>
+                    <Badge variant={v.id == categoryId ? "primary" : "light"}>
+                      <Link
+                        to={"/category/" + v.id}
+                        style={{ color: "black", textDecoration: "none" }}
+                      >
+                        <i
+                          className="fa fa-circle"
+                          style={{
+                            color: "#" + v.color,
+                            fontSize: 10,
+                          }}
+                        ></i>{" "}
+                        {v.name}
+                      </Link>
+                    </Badge>
+                  </div>
+                ))}
               </>
             )}
-            <br></br>
-            {props.categories.map((v, i) => (
-              <div key={i}>
-                <Badge variant={v.id == categoryId ? "primary" : "light"}>
-                  <Link
-                    to={"/category/" + v.id}
-                    style={{ color: "black", textDecoration: "none" }}
-                  >
-                    <i
-                      className="fa fa-circle"
-                      style={{
-                        color: "#" + v.color,
-                        fontSize: 10,
-                      }}
-                    ></i>{" "}
-                    {v.name}
-                  </Link>
-                </Badge>
-              </div>
-            ))}
-          </Col>
-          <Col xs="10">
+
             <br></br>
             <InfiniteScroll
               loadMore={getThreads}
@@ -143,14 +182,14 @@ function Feed(props) {
                       style={{
                         color:
                           "#" +
-                          props.categories.find(
+                          categories.find(
                             (category) => category.id === v.categoryId
                           ).color,
                         fontSize: 10,
                       }}
                     ></i>{" "}
                     {
-                      props.categories.find(
+                      categories.find(
                         (category) => category.id === v.categoryId
                       ).name
                     }
@@ -173,14 +212,11 @@ function mapStateToProps(state) {
     username: state.user.username,
     token: state.user.token,
     access: state.user.access,
-    categories: state.category.categories,
   };
 }
 
 const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch({ type: LOGOUT }),
-  onLoadCategories: (categories) =>
-    dispatch({ type: LOAD_CATEGORIES, categories }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Feed);

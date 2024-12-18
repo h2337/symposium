@@ -27,6 +27,7 @@ function NewThread(props) {
         if (r.status === 200) {
           handleClose();
           toast.success("New thread created!");
+          props.postCreateCallback();
         } else {
           toast.error("Failed to create a new thread, try again.");
         }

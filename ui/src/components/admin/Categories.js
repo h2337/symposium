@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col, Modal, Form } from "react-bootstrap";
 import { SliderPicker } from "react-color";
 import { connect } from "react-redux";
-import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 import { loadCategories, createCategory } from "../../api/category";
 import { toast } from "react-toastify";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 
 function Categories(props) {
   const [name, setName] = useState("");
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     getCategories();
@@ -20,7 +20,7 @@ function Categories(props) {
         if (r.status === 200) {
           r.text().then((responseBody) => {
             let responseBodyObject = JSON.parse(responseBody);
-            props.onLoadCategories(responseBodyObject.categories); // TODO: Why Redux?
+            setCategories(responseBodyObject.categories);
           });
         } else {
           toast.error("Failed to load the categories");
@@ -123,7 +123,7 @@ function Categories(props) {
           </Modal>
           <br></br>
           <br></br>
-          {props.categories.map((v, i) => (
+          {categories.map((v, i) => (
             <div>
               <div key={i}>
                 <i
@@ -152,14 +152,8 @@ function Categories(props) {
 
 function mapStateToProps(state) {
   return {
-    categories: state.category.categories,
     token: state.user.token,
   };
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  onLoadCategories: (categories) =>
-    dispatch({ type: LOAD_CATEGORIES, categories }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+export default connect(mapStateToProps, null)(Categories);

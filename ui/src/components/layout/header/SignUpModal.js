@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { createAccount } from "../../../api/account";
+import { createUser } from "../../../api/user";
 
 function SignUpModal() {
   const [show, setShow] = useState(false);
@@ -31,7 +31,7 @@ function SignUpModal() {
       toast.error("Minimum password length is 6, try again.");
       return;
     }
-    createAccount(username, email, password)
+    createUser(username, email, password)
       .then((r) => {
         if (r.status === 200) {
           handleClose();

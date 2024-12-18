@@ -185,25 +185,42 @@ function Feed(props) {
                     className={classes.feedThreadBox}
                     onClick={() => openThread(v)}
                   >
-                    <h5 style={{ marginBottom: 0 }}>
-                      {v != undefined && v.title}
-                    </h5>
-                    <i
-                      className="fa fa-circle fa-xs"
-                      style={{
-                        color:
-                          "#" +
-                          categories.find(
-                            (category) => category.id === v.categoryID
-                          ).color,
-                        fontSize: 10,
-                      }}
-                    ></i>{" "}
-                    {
-                      categories.find(
-                        (category) => category.id === v.categoryID
-                      ).name
-                    }
+                    <Container fluid>
+                      <Row>
+                        <img
+                          src={
+                            process.env.API_URL +
+                            "/avatars/" +
+                            v.userID +
+                            ".jpg"
+                          }
+                          width="50"
+                          height="50"
+                          style={{ borderRadius: "50%", marginRight: "10px" }}
+                        />
+                        <div style={{ display: "inline" }}>
+                          <h5 style={{ marginBottom: 0 }}>
+                            {v != undefined && v.title}
+                          </h5>
+                          <i
+                            className="fa fa-circle fa-xs"
+                            style={{
+                              color:
+                                "#" +
+                                categories.find(
+                                  (category) => category.id === v.categoryID
+                                ).color,
+                              fontSize: 10,
+                            }}
+                          ></i>{" "}
+                          {
+                            categories.find(
+                              (category) => category.id === v.categoryID
+                            ).name
+                          }
+                        </div>
+                      </Row>
+                    </Container>
                   </div>
                   <hr></hr>
                 </div>

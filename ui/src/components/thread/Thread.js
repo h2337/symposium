@@ -145,6 +145,7 @@ function Thread(props) {
                         />
                         &nbsp;
                         {v.username}
+                        <hr></hr>
                         <div
                           dangerouslySetInnerHTML={{
                             __html: DOMPurify.sanitize(v.content),

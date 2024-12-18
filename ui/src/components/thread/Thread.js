@@ -107,6 +107,11 @@ function Thread(props) {
     loadPosts();
   }
 
+  function formatDate(date) {
+    let d = new Date(date);
+    return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
+  }
+
   return (
     <>
       {thread === undefined || category === undefined ? (
@@ -193,6 +198,16 @@ function Thread(props) {
                               __html: DOMPurify.sanitize(v.content),
                             }}
                           ></div>
+                          <div
+                            style={{
+                              float: "right",
+                              fontSize: "0.8em",
+                              fontStyle: "italic",
+                              color: "grey",
+                            }}
+                          >
+                            {formatDate(v.createdAt)}
+                          </div>
                         </Col>
                       </Row>
                     </Container>

@@ -255,6 +255,15 @@ function Feed(props) {
                           }
                         </div>
                         <div className="ml-auto">
+                          <i
+                            style={{
+                              fontSize: "0.8em",
+                              marginRight: "10px",
+                              color: "gray",
+                            }}
+                          >
+                            {new Date(v.createdAt).toDateString()}
+                          </i>
                           <i className="fa fa-comments"></i> {v.postCount}
                         </div>
                       </Row>

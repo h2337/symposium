@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams, Link, useHistory } from "react-router-dom";
-import { Container, Row, Card } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
@@ -75,6 +75,11 @@ function Profile(props) {
     history.push("/thread/" + postAndThread.threadID);
   }
 
+  function formatDate(date) {
+    let d = new Date(date);
+    return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
+  }
+
   return (
     <Container>
       <br></br>
@@ -101,17 +106,69 @@ function Profile(props) {
         >
           {posts.map((v, i) => (
             <>
-              <Link
-                style={{ marginLeft: "10px" }}
-                onClick={() => openThread(v)}
-              >
-                {v.threadTitle}
-              </Link>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(v.content),
-                }}
-              ></div>
+              <Container>
+                <Row>
+                  <Link
+                    style={{
+                      marginLeft: "10px",
+                      fontSize: "0.8em",
+                      marginBottom: "20px",
+                    }}
+                    onClick={() => openThread(v)}
+                  >
+                    {v.threadTitle}
+                  </Link>
+                </Row>
+                <Row>
+                  <Col xs="1">
+                    <Link to={"/profile/" + v.userID}>
+                      <img
+                        src={
+                          "http://" +
+                          process.env.API_URL +
+                          "/avatars/" +
+                          v.userID +
+                          ".jpg"
+                        }
+                        width="50"
+                        height="50"
+                        style={{ borderRadius: "50%" }}
+                      />
+                    </Link>
+                  </Col>
+                  <Col xs="11">
+                    <div
+                      style={{
+                        fontSize: "0.8em",
+                        fontWeight: "bold",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <Link
+                        to={"/profile/" + v.userID}
+                        style={{ textDecoration: "none", color: "gray" }}
+                      >
+                        {v.username}
+                      </Link>
+                    </div>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(v.content),
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        float: "right",
+                        fontSize: "0.8em",
+                        fontStyle: "italic",
+                        color: "grey",
+                      }}
+                    >
+                      {formatDate(v.createdAt)}
+                    </div>
+                  </Col>
+                </Row>
+              </Container>
               <hr></hr>
             </>
           ))}

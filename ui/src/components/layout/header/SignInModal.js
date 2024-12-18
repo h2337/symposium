@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
@@ -11,6 +12,7 @@ function SignInModal(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [cookies, setCookie] = useCookies([]);
+  const history = useHistory();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -35,6 +37,7 @@ function SignInModal(props) {
             setCookie("email", responseBodyObject.user.email, { path: "/" });
             setCookie("access", responseBodyObject.user.access, { path: "/" });
             setCookie("token", responseBodyObject.token, { path: "/" });
+            history.push("/");
           });
         } else {
           toast.error("Login failed, try again."); // TODO: Show detailed error

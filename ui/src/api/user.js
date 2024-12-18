@@ -5,7 +5,7 @@ export function getUser(id) {
 }
 
 export function createUser(username, email, password) {
-  return fetch(process.env.API_URL + "/account", {
+  return fetch(process.env.API_URL + "/user", {
     method: "POST",
     body: JSON.stringify({ username, email, password }),
   });

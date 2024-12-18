@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jafarlihi/symposium/backend/config"
+	"github.com/jafarlihi/symposium/backend/models"
 	"github.com/jafarlihi/symposium/backend/repositories"
 	"io"
 	"net/http"
@@ -13,9 +14,21 @@ import (
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
-	if len(queryParams["threadID"]) == 0 || queryParams["threadID"][0] == "" || len(queryParams["page"]) == 0 || queryParams["page"][0] == "" || len(queryParams["pageSize"]) == 0 || queryParams["pageSize"][0] == "" {
+	if len(queryParams["page"]) == 0 || queryParams["page"][0] == "" || len(queryParams["pageSize"]) == 0 || queryParams["pageSize"][0] == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "page, pageSize, and/or threadID query parameters are missing"}`)
+		io.WriteString(w, `{"error": "page and/or pageSize query parameters are missing"}`)
+		return
+	}
+	threadIDExists := len(queryParams["threadID"]) != 0 && queryParams["threadID"][0] != ""
+	userIDExists := len(queryParams["userID"]) != 0 && queryParams["userID"][0] != ""
+	if !threadIDExists && !userIDExists {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "threadID or userID query parameter is required"}`)
+		return
+	}
+	if threadIDExists && userIDExists {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Both threadID and userID query parameters are present, only one is required"}`)
 		return
 	}
 	page, err := strconv.ParseUint(queryParams["page"][0], 10, 32)
@@ -30,13 +43,31 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "pageSize query parameter couldn't be parsed as an integer"}`)
 		return
 	}
-	threadID, err := strconv.ParseUint(queryParams["threadID"][0], 10, 32)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "threadID query parameter couldn't be parsed as an integer"}`)
-		return
+	var threadID uint64
+	if threadIDExists {
+		threadID, err = strconv.ParseUint(queryParams["threadID"][0], 10, 32)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, `{"error": "threadID query parameter couldn't be parsed as an integer"}`)
+			return
+		}
 	}
-	posts, err := repositories.GetPostsByThreadID(uint32(threadID), uint32(page), uint32(pageSize))
+	var userID uint64
+	if userIDExists {
+		userID, err = strconv.ParseUint(queryParams["userID"][0], 10, 32)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, `{"error": "userID query parameter couldn't be parsed as an integer"}`)
+			return
+		}
+	}
+	var posts []*models.Post
+	if threadIDExists {
+		posts, err = repositories.GetPostsByThreadID(uint32(threadID), uint32(page), uint32(pageSize))
+	}
+	if userIDExists {
+		posts, err = repositories.GetPostsByUserID(uint32(userID), uint32(page), uint32(pageSize))
+	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to get the posts"}`)

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Spinner, Container, Row, Col, Badge, Card } from "react-bootstrap";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { getThread } from "../../api/thread";
 import { getPosts } from "../../api/post";
@@ -95,7 +95,7 @@ function Thread(props) {
             setPosts((posts) => [...posts, ...responseBodyObject]);
           });
         } else {
-          toast.error("Failed to fetch posts");
+          toast.error("Failed to fetch posts.");
         }
       })
       .catch((e) => toast.error("Failed to fetch posts."));
@@ -158,19 +158,21 @@ function Thread(props) {
                   <>
                     <Card style={{ width: "100%" }}>
                       <Card.Body>
-                        <img
-                          src={
-                            process.env.API_URL +
-                            "/avatars/" +
-                            v.userID +
-                            ".jpg"
-                          }
-                          width="50"
-                          height="50"
-                          style={{ borderRadius: "50%" }}
-                        />
-                        &nbsp;
-                        {v.username}
+                        <Link to={"/profile/" + v.userID}>
+                          <img
+                            src={
+                              process.env.API_URL +
+                              "/avatars/" +
+                              v.userID +
+                              ".jpg"
+                            }
+                            width="50"
+                            height="50"
+                            style={{ borderRadius: "50%" }}
+                          />
+                          &nbsp;
+                          {v.username}
+                        </Link>
                         <hr></hr>
                         <div
                           dangerouslySetInnerHTML={{

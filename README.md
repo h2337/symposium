@@ -1,6 +1,6 @@
 ### Symposium
 
-Demo / support forums: http://34.107.41.40/
+Demo / support forums: http://symposium.sytes.net/
 
 #### Screenshots
 <p align="center">

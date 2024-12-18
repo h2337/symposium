@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 import { getCategories } from "../../api/category";
@@ -21,7 +21,7 @@ function Categories(props) {
           r.text().then((responseBody) => {
             let responseBodyObject = JSON.parse(responseBody);
             setCategories(responseBodyObject);
-            onCategoryLoad(responseBodyObject);
+            props.onCategoryLoad(responseBodyObject);
           });
         } else {
           toast.error("Failed to load the categories");

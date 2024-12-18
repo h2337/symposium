@@ -37,7 +37,7 @@ function GeneralSettings(props) {
 
   function handleSubmit() {
     let siteNameParameter = siteName == "" ? settings.siteName : siteName;
-    updateSettings({ siteName: siteNameParameter })
+    updateSettings({ siteName: siteNameParameter, token: props.token })
       .then((r) => {
         if (r.status === 200) {
           toast.success("Settings updated.");
@@ -72,4 +72,10 @@ function GeneralSettings(props) {
   );
 }
 
-export default connect(null)(GeneralSettings);
+function mapStateToProps(state) {
+  return {
+    token: state.user.token,
+  };
+}
+
+export default connect(mapStateToProps)(GeneralSettings);

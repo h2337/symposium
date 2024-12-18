@@ -1,4 +1,7 @@
 ## Symposium
+
+![screenie](https://github.com/jafarlihi/symposium/raw/master/symp.png)
+
 ### Features
 - Threads and posts
 - Categories

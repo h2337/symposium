@@ -1,11 +1,11 @@
 export function getUser(id) {
-  return fetch(process.env.API_URL + "/user/" + id, {
+  return fetch("http://" + process.env.API_URL + "/user/" + id, {
     method: "GET",
   });
 }
 
 export function createUser(username, email, password) {
-  return fetch(process.env.API_URL + "/user", {
+  return fetch("http://" + process.env.API_URL + "/user", {
     method: "POST",
     body: JSON.stringify({ username, email, password }),
   });

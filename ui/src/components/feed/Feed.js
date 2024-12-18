@@ -30,6 +30,20 @@ function Feed(props) {
   const history = useHistory();
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
+  Feed.websocketNewThread = function (thread) {
+    if (threads.find((e) => e.id === thread.id) === undefined)
+      setThreads([JSON.parse(thread)].concat(threads));
+  };
+
+  useEffect(() => {
+    let threadsSocket = new WebSocket(
+      "ws://" + process.env.API_URL + "/ws/thread"
+    );
+    threadsSocket.onmessage = function (event) {
+      Feed.websocketNewThread(event.data);
+    };
+  }, []);
+
   useEffect(() => {
     if (
       props.token !== undefined &&
@@ -214,6 +228,7 @@ function Feed(props) {
                       <Row>
                         <img
                           src={
+                            "http://" +
                             process.env.API_URL +
                             "/avatars/" +
                             v.userID +

@@ -161,6 +161,7 @@ function Thread(props) {
                         <Link to={"/profile/" + v.userID}>
                           <img
                             src={
+                              "http://" +
                               process.env.API_URL +
                               "/avatars/" +
                               v.userID +

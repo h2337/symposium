@@ -80,7 +80,7 @@ function Profile(props) {
       <br></br>
       <Row>
         <img
-          src={process.env.API_URL + "/avatars/" + userID + ".jpg"}
+          src={"http://" + process.env.API_URL + "/avatars/" + userID + ".jpg"}
           width="100"
           height="100"
           style={{ borderRadius: "50%" }}

@@ -1,5 +1,5 @@
 export function getThreads(categoryID, page, pageSize) {
-  let url = new URL(process.env.API_URL + "/thread");
+  let url = new URL("http://" + process.env.API_URL + "/thread");
   let params;
   if (categoryID !== undefined) params = { categoryID, page, pageSize };
   else params = { page, pageSize };
@@ -10,13 +10,13 @@ export function getThreads(categoryID, page, pageSize) {
 }
 
 export function getThread(id) {
-  return fetch(process.env.API_URL + "/thread/" + id, {
+  return fetch("http://" + process.env.API_URL + "/thread/" + id, {
     method: "GET",
   });
 }
 
 export function createThread(token, title, content, categoryId) {
-  return fetch(process.env.API_URL + "/thread", {
+  return fetch("http://" + process.env.API_URL + "/thread", {
     method: "POST",
     body: JSON.stringify({ token, title, content, categoryId }),
   });

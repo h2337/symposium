@@ -175,7 +175,12 @@ function Feed(props) {
               hasMore={hasMoreThreads}
               initialLoad={false}
               threshold={1}
-              loader={<Spinner animation="grow" />} // TODO: Align to center
+              loader={
+                <Spinner
+                  style={{ margin: "auto", display: "table" }}
+                  animation="grow"
+                />
+              }
             >
               {threads.map((v, i) => (
                 <div key={i}>
@@ -206,8 +211,16 @@ function Feed(props) {
                   <hr></hr>
                 </div>
               ))}
-              {!hasMoreThreads && <div>No more threads!</div>} // TODO: Align to
-              center
+              {!hasMoreThreads && (
+                <div
+                  style={{
+                    margin: "auto",
+                    display: "table",
+                  }}
+                >
+                  No more recent threads
+                </div>
+              )}{" "}
             </InfiniteScroll>
           </Col>
         </Row>

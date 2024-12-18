@@ -36,7 +36,7 @@ func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Password field is missing"}`)
 		return
 	}
-	password, userID, err := repositories.GetPasswordAndUserIDByUsername(tcr.Username)
+	user, err := repositories.GetUserByUsername(tcr.Username)
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -48,14 +48,14 @@ func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(tcr.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(tcr.Password))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "Wrong password"}`)
 		return
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID": userID,
+		"userID": user.ID,
 	})
 	tokenString, err := token.SignedString([]byte(config.Config.Jwt.SigningSecret))
 	if err != nil {

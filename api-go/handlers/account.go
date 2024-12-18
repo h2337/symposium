@@ -26,7 +26,7 @@ func CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if acr.Username == "" || acr.Email == "" || acr.Password == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Username, email, or password field(s) is/are missing, all are required"}`)
+		io.WriteString(w, `{"error": "Username, email, or password field(s) is/are missing"}`)
 		return
 	}
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(acr.Password), bcrypt.DefaultCost)

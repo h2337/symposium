@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-func createAccountHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Log.Info("shit2")
-}
-
 func main() {
 	logger.InitLogger()
 	config.InitConfig()

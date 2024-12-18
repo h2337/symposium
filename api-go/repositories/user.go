@@ -3,19 +3,19 @@ package repositories
 import (
 	"github.com/jafarlihi/symposium/backend/database"
 	"github.com/jafarlihi/symposium/backend/logger"
+	"github.com/jafarlihi/symposium/backend/models"
 )
 
-func GetPasswordAndUserIDByUsername(username string) (string, string, error) {
-	sql := "SELECT password, id FROM users where username = $1"
+func GetUserByUsername(username string) (*models.User, error) {
+	sql := "SELECT id, username, email, password, access FROM users where username = $1"
 	row := database.Database.QueryRow(sql, username)
-	var password string
-	var userID string
-	err := row.Scan(&password, &userID)
+	var user models.User
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Access)
 	if err != nil {
 		logger.Log.Error("Failed to SELECT a password, error: " + err.Error())
-		return "", "", err
+		return nil, err
 	}
-	return password, userID, nil
+	return &user, nil
 }
 
 func CreateUser(username string, email string, password string) error {

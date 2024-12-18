@@ -7,7 +7,7 @@ import (
 )
 
 func GetCategories() ([]models.Category, error) {
-	sql := "SELECT id, name, color FROM categories"
+	sql := "SELECT id, name, color, icon FROM categories"
 	rows, err := database.Database.Query(sql)
 	if err != nil {
 		logger.Log.Error("Failed to SELECT categories, error: " + err.Error())
@@ -17,7 +17,7 @@ func GetCategories() ([]models.Category, error) {
 	categories := make([]models.Category, 0)
 	for rows.Next() {
 		var category models.Category
-		if err := rows.Scan(&category.ID, &category.Name, &category.Color); err != nil {
+		if err := rows.Scan(&category.ID, &category.Name, &category.Color, &category.Icon); err != nil {
 			logger.Log.Error("Failed to scan SELECTed row of categories, error: " + err.Error())
 			return nil, err
 		}

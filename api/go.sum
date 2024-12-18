@@ -15,6 +15,7 @@ github.com/gorilla/websocket v1.4.2 h1:+/TMaTYc4QFitKJxsQ7Yye35DkWvkdLcvGKqM+x0U
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/holys/initials-avatar v0.0.0-20180809162153-a82edcad3408 h1:OqLxZaCEit6/5mADgORYceh/0rmgrYx7sKJXsexKcvo=
 github.com/holys/initials-avatar v0.0.0-20180809162153-a82edcad3408/go.mod h1:/x3iN/T2oO1yFXzDs6BF/Y3THT1R753nBr5vPv/HrWA=
+github.com/jafarlihi/symposium v0.0.0-20200527133021-83477fe8c852 h1:DcQbaFJWUKUU5othKq4ckqVyc5w5oXr4vLSViylD/gA=
 github.com/lib/pq v1.4.0 h1:TmtCFbH+Aw0AixwyttznSMQDgbR5Yed/Gg6S8Funrhc=
 github.com/lib/pq v1.4.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 h1:lDH9UUVJtmYCjyT0CI4q8xvlXPxeZ0gYCVvWbmPlp88=

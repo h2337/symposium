@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link, useParams, useHistory } from "react-router-dom";
-import { LOGIN, LOAD_CATEGORIES, OPEN_THREAD } from "../../redux/actionTypes";
+import { LOGIN } from "../../redux/actionTypes";
 import {
   Container,
   Row,
@@ -93,7 +93,6 @@ function Feed(props) {
             r.text().then((responseBody) => {
               let responseBodyObject = JSON.parse(responseBody);
               setCategories(responseBodyObject);
-              props.onCategoryLoad(responseBodyObject);
               resolve("Categories loaded");
             });
           } else {
@@ -127,7 +126,6 @@ function Feed(props) {
   }
 
   function openThread(thread) {
-    props.onThreadOpen(thread);
     history.push("/thread/" + thread.id);
   }
 
@@ -333,9 +331,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onCategoryLoad: (categories) =>
-    dispatch({ type: LOAD_CATEGORIES, categories }),
-  onThreadOpen: (thread) => dispatch({ type: OPEN_THREAD, thread }),
   onLogin: (username, id, email, access, token) =>
     dispatch({ type: LOGIN, username, id, email, access, token }),
 });

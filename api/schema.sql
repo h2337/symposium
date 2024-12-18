@@ -53,6 +53,29 @@ CREATE TABLE follows (
     UNIQUE (user_id, thread_id)
 );
 
+CREATE TABLE notification_types (
+    id serial NOT NULL,
+    name character varying NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE notifications (
+    id serial NOT NULL,
+    type integer NOT NULL,
+    user_id integer NOT NULL,
+    content character varying NOT NULL,
+    link character varying,
+    thread_id integer,
+    post_id integer,
+    seen boolean NOT NULL DEFAULT false,
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (type) REFERENCES notification_types (id),
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (thread_id) REFERENCES threads (id),
+    FOREIGN KEY (post_id) REFERENCES posts (id)
+);
+
 INSERT INTO settings (name, value) VALUES ('siteName', 'Symposium');
 INSERT INTO settings (name, value) VALUES ('isInitialized', 'false');
 

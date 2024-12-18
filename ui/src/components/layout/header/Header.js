@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory, Link } from "react-router-dom";
-import { Navbar, Nav, Dropdown } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Dropdown,
+  Button,
+  Badge,
+  Container,
+  Row,
+  Col,
+} from "react-bootstrap";
 import { toast } from "react-toastify";
+import InfiniteScroll from "react-infinite-scroller";
 import { useCookies } from "react-cookie";
 import Tour from "reactour";
 import { LOGOUT, START_TOURING } from "../../../redux/actionTypes";
 import { getSettings } from "../../../api/setting";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
+import { getNotifications } from "../../../api/notification";
 
 function Header(props) {
   const [siteName, setSiteName] = useState("");
+  const [notifications, setNotifications] = useState([]);
+  const [hasMoreNotifications, setHasMoreNotifications] = useState(true);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const history = useHistory();
   const [cookies, setCookie, removeCookie] = useCookies([]);
@@ -78,6 +91,47 @@ function Header(props) {
     history.push("/profile/" + props.userID);
   }
 
+  function loadNotifications() {
+    getNotifications(props.token, Header.notificationPage++, 10)
+      .then((r) => {
+        if (r.status === 200) {
+          r.text().then((responseBody) => {
+            let responseBodyObject = JSON.parse(responseBody);
+            if (responseBodyObject.length === 0) setHasMoreNotifications(false);
+            setNotifications((notifications) => [
+              ...notifications,
+              ...responseBodyObject,
+            ]);
+          });
+        } else {
+          toast.error("Failed to fetch notifications");
+        }
+      })
+      .catch((e) => toast.error("Failed to fetch notifications."));
+  }
+
+  function resetNotifications() {
+    Header.notificationPage = 0;
+    setNotifications([]);
+    setHasMoreNotifications(true);
+  }
+
+  function formatDate(date) {
+    let d = new Date(date);
+    let minutes = d.getMinutes();
+    return (
+      d.toDateString() +
+      " " +
+      d.getHours() +
+      ":" +
+      (minutes < 10 ? "0" + minutes : minutes)
+    );
+  }
+
+  function handleNotificationClick(notification) {
+    history.push(notification.link);
+  }
+
   return (
     <>
       <Tour
@@ -92,34 +146,89 @@ function Header(props) {
         </Navbar.Brand>
         <Nav className="justify-content-end" style={{ width: "100%" }}>
           {props.username.length > 0 && props.token.length > 0 ? (
-            <Dropdown drop="left" id="user-bar">
-              <Dropdown.Toggle variant="primary">
-                <img
-                  src={
-                    "http://" + process.env.API_URL + "/avatars/" + props.userID
-                  }
-                  width="25"
-                  height="25"
-                  style={{ borderRadius: "50%" }}
-                />
-                &nbsp;
-                {props.username}
-              </Dropdown.Toggle>
+            <>
+              <Dropdown drop="left" id="user-bar">
+                <Dropdown.Toggle variant="primary">
+                  <img
+                    src={
+                      "http://" +
+                      process.env.API_URL +
+                      "/avatars/" +
+                      props.userID
+                    }
+                    width="25"
+                    height="25"
+                    style={{ borderRadius: "50%" }}
+                  />
+                  &nbsp;
+                  {props.username}
+                </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={handleProfileClick}>
-                  <i className="fa fa-user"></i> Profile
-                </Dropdown.Item>
-                {props.access == "99" && (
-                  <Dropdown.Item onClick={handleAdminPanelClick}>
-                    <i className="fa fa-cogs"></i> Admin panel
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={handleProfileClick}>
+                    <i className="fa fa-user"></i> Profile
                   </Dropdown.Item>
-                )}
-                <Dropdown.Item onClick={handleLogout}>
-                  <i className="fa fa-sign-out"></i> Logout
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+                  {props.access == "99" && (
+                    <Dropdown.Item onClick={handleAdminPanelClick}>
+                      <i className="fa fa-cogs"></i> Admin panel
+                    </Dropdown.Item>
+                  )}
+                  <Dropdown.Item onClick={handleLogout}>
+                    <i className="fa fa-sign-out"></i> Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <Dropdown drop="left" style={{ marginLeft: "5px" }}>
+                <div onClick={resetNotifications}>
+                  <Dropdown.Toggle variant="primary">
+                    <i className="fa fa-bell"></i>{" "}
+                    <Badge variant="light">0</Badge>
+                  </Dropdown.Toggle>
+                </div>
+
+                <Dropdown.Menu
+                  style={{
+                    width: "250px",
+                    maxHeight: "500px",
+                    overflowY: "auto",
+                  }}
+                >
+                  <InfiniteScroll
+                    loadMore={loadNotifications}
+                    hasMore={hasMoreNotifications}
+                    initialLoad={true}
+                    threshold={1}
+                    useWindow={false}
+                    loader={<div></div>}
+                  >
+                    {notifications.map((v, i) => (
+                      <>
+                        <Row
+                          style={{ width: "100%", margin: "0", padding: "0" }}
+                          onClick={() => handleNotificationClick(v)}
+                        >
+                          <Col xs={1}>
+                            {!v.seen && (
+                              <i
+                                className="fa fa-circle"
+                                style={{ fontSize: "0.3em", color: "blue" }}
+                              />
+                            )}
+                          </Col>
+                          <Col xs={6}>{v.content}</Col>
+                          <Col xs={4}>
+                            <span style={{ fontSize: "0.7em" }}>
+                              {formatDate(v.createdAt)}
+                            </span>
+                          </Col>
+                        </Row>
+                        <hr></hr>
+                      </>
+                    ))}
+                  </InfiniteScroll>
+                </Dropdown.Menu>
+              </Dropdown>
+            </>
           ) : (
             <>
               <SignUpModal></SignUpModal>

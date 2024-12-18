@@ -37,6 +37,7 @@ func main() {
 	router.HandleFunc("/api/follow", handlers.GetFollow).Methods("GET")
 	router.HandleFunc("/api/follow", handlers.Follow).Methods("POST")
 	router.HandleFunc("/api/follow", handlers.Unfollow).Methods("DELETE")
+	router.HandleFunc("/api/notification", handlers.GetNotifications).Methods("GET")
 	router.HandleFunc("/api/ws/thread", websocket.HandleWebsocket)
 	router.PathPrefix("/avatars").Handler(http.FileServer(http.Dir("./public/")))
 	router.PathPrefix("/fonts").Handler(http.FileServer(http.Dir("./public/")))
@@ -49,7 +50,7 @@ func main() {
 	})
 
 	origins := gorillaHandlers.AllowedOrigins([]string{"*"})
-	headers := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With"})
+	headers := gorillaHandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	methods := gorillaHandlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PATCH"})
 
 	logger.Log.Info("Starting HTTP server listening at " + config.Config.HttpServer.Port)

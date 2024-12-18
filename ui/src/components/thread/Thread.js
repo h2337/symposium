@@ -10,6 +10,7 @@ import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroller";
 import DOMPurify from "dompurify";
+import Reply from "./Reply";
 
 function Thread(props) {
   const [posts, setPosts] = useState([]);
@@ -82,6 +83,13 @@ function Thread(props) {
       .catch((e) => toast.error("Failed to fetch posts."));
   }
 
+  function postReplyCallback() {
+    Thread.postPage = 0;
+    setPosts([]);
+    setHasMorePosts(true);
+    loadPosts();
+  }
+
   return (
     <>
       {thread === undefined || category === undefined ? (
@@ -90,7 +98,7 @@ function Thread(props) {
           animation="border"
         />
       ) : (
-        <Container>
+        <Container fluid>
           <Row>
             <Col>
               <Badge variant="light">
@@ -105,37 +113,50 @@ function Thread(props) {
           </Row>
           <br></br>
           <Row>
-            <InfiniteScroll
-              loadMore={loadPosts}
-              hasMore={hasMorePosts}
-              initialLoad={true}
-              threshold={1}
-              loader={<div></div>}
-              style={{ width: "100%" }}
-            >
-              {posts.map((v, i) => (
-                <>
-                  <Card style={{ width: "100%" }}>
-                    <Card.Body>
-                      <img
-                        src={
-                          process.env.API_URL + "/avatars/" + v.userID + ".jpg"
-                        }
-                        width="50"
-                        height="50"
-                        style={{ borderRadius: "50%" }}
-                      />
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(v.content),
-                        }}
-                      ></div>
-                    </Card.Body>
-                  </Card>
-                  <hr></hr>
-                </>
-              ))}
-            </InfiniteScroll>
+            <Col xs="1">
+              <Reply
+                threadID={threadID}
+                postReplyCallback={postReplyCallback}
+              />
+            </Col>
+            <Col xs="11">
+              <InfiniteScroll
+                loadMore={loadPosts}
+                hasMore={hasMorePosts}
+                initialLoad={true}
+                threshold={1}
+                loader={<div></div>}
+                style={{ width: "100%" }}
+              >
+                {posts.map((v, i) => (
+                  <>
+                    <Card style={{ width: "100%" }}>
+                      <Card.Body>
+                        <img
+                          src={
+                            process.env.API_URL +
+                            "/avatars/" +
+                            v.userID +
+                            ".jpg"
+                          }
+                          width="50"
+                          height="50"
+                          style={{ borderRadius: "50%" }}
+                        />
+                        &nbsp;
+                        {v.username}
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(v.content),
+                          }}
+                        ></div>
+                      </Card.Body>
+                    </Card>
+                    <hr></hr>
+                  </>
+                ))}
+              </InfiniteScroll>
+            </Col>
           </Row>
         </Container>
       )}

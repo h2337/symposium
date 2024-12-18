@@ -6,3 +6,10 @@ export function getPosts(threadID, page, pageSize) {
     method: "GET",
   });
 }
+
+export function createPost(token, threadID, content) {
+  return fetch(process.env.API_URL + "/post", {
+    method: "POST",
+    body: JSON.stringify({ token, threadID, content }),
+  });
+}

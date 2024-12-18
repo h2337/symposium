@@ -11,4 +11,5 @@ type Post struct {
 	PostNumber uint32    `json:"postNumber"`
 	Content    string    `json:"content"`
 	CreatedAt  time.Time `json:"createdAt"`
+	Username   string    `json:"username"`
 }

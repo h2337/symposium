@@ -103,7 +103,6 @@ function Feed(props) {
     history.push("/thread/" + thread.id);
   }
 
-  // TODO: Make mobile category dropdown Link not href
   return (
     <>
       <Container fluid>
@@ -152,8 +151,10 @@ function Feed(props) {
                 <br></br>
                 <DropdownButton title="Categories">
                   {categories.map((v, i) => (
-                    <Dropdown.Item key={i} href={"/category/" + v.id}>
-                      {" "}
+                    <Dropdown.Item
+                      key={i}
+                      onClick={() => history.push("/category/" + v.id)}
+                    >
                       <Badge variant={v.id == categoryID ? "primary" : "light"}>
                         <i
                           className="fa fa-circle"

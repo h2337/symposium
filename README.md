@@ -1,7 +1,7 @@
 ### Symposium
 #### Screenshots
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/screenshots.png?token=AKL72S3K46U454LWBTH5YXS6XVFAQ">
+  <img src="https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/screenshots.png?token=AKL72S64U56LXZD67FZTX7S6XVFKU">
 </p>
 
 #### Installation
@@ -10,6 +10,8 @@ Write down PostgreSQL details, JWT signing secret, and port to `./api/config.jso
 Write API URL to `build.sh` "export API_URL=" line.
 
 Run `build.sh` and then run `./build/api`.
+
+To create an admin account, sign up through the site and then set "access" column of user to 99.
 #### Features
 - [x] User login/register
 - [x] Basic thread/post functionality

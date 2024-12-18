@@ -19,12 +19,17 @@ import { LOGOUT, START_TOURING } from "../../../redux/actionTypes";
 import { getSettings } from "../../../api/setting";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
-import { getNotifications } from "../../../api/notification";
+import {
+  getNotifications,
+  getUnseenNotificationCount,
+  markNotificationsSeen,
+} from "../../../api/notification";
 
 function Header(props) {
   const [siteName, setSiteName] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [hasMoreNotifications, setHasMoreNotifications] = useState(true);
+  const [unseenNotificationCount, setUnseenNotifcationCount] = useState(0);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const history = useHistory();
   const [cookies, setCookie, removeCookie] = useCookies([]);
@@ -51,6 +56,20 @@ function Header(props) {
     if (props.isTouring) setIsTourOpen(props.isTourOpen);
   }, [props.isTourOpen]);
 
+  useEffect(() => {
+    if (props.token.length > 0) fetchUnseenNotificationCount();
+  }, [props.token, notifications]);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      let ids = [];
+      notifications.forEach(function (item, index) {
+        ids.push(item.id);
+      });
+      if (props.token.length > 0) markNotificationsSeen(props.token, ids);
+    }
+  }, [notifications]);
+
   function closeTour() {
     setIsTourOpen(false);
   }
@@ -71,6 +90,21 @@ function Header(props) {
         "Navigate to the admin panel through your user bar and customize the settings, also create few categories so threads can be created!",
     },
   ];
+
+  function fetchUnseenNotificationCount() {
+    getUnseenNotificationCount(props.token)
+      .then((r) => {
+        if (r.status === 200) {
+          r.text().then((responseBody) => {
+            let responseBodyObject = JSON.parse(responseBody);
+            setUnseenNotifcationCount(responseBodyObject.count);
+          });
+        } else {
+          toast.error("Failed to fetch notifications");
+        }
+      })
+      .catch((e) => toast.error("Failed to fetch notifications."));
+  }
 
   function handleLogout() {
     removeCookie("username", { path: "/" });
@@ -182,7 +216,7 @@ function Header(props) {
                 <div onClick={resetNotifications}>
                   <Dropdown.Toggle variant="primary">
                     <i className="fa fa-bell"></i>{" "}
-                    <Badge variant="light">0</Badge>
+                    <Badge variant="light">{unseenNotificationCount}</Badge>
                   </Dropdown.Toggle>
                 </div>
 
@@ -203,25 +237,26 @@ function Header(props) {
                   >
                     {notifications.map((v, i) => (
                       <>
-                        <Row
-                          style={{ width: "100%", margin: "0", padding: "0" }}
-                          onClick={() => handleNotificationClick(v)}
-                        >
-                          <Col xs={1}>
-                            {!v.seen && (
-                              <i
-                                className="fa fa-circle"
-                                style={{ fontSize: "0.3em", color: "blue" }}
-                              />
-                            )}
-                          </Col>
-                          <Col xs={6}>{v.content}</Col>
-                          <Col xs={4}>
-                            <span style={{ fontSize: "0.7em" }}>
-                              {formatDate(v.createdAt)}
-                            </span>
-                          </Col>
-                        </Row>
+                        <a onClick={() => handleNotificationClick(v)}>
+                          <Row
+                            style={{ width: "100%", margin: "0", padding: "0" }}
+                          >
+                            <Col xs={1}>
+                              {!v.seen && (
+                                <i
+                                  className="fa fa-circle"
+                                  style={{ fontSize: "0.3em", color: "blue" }}
+                                />
+                              )}
+                            </Col>
+                            <Col xs={6}>{v.content}</Col>
+                            <Col xs={4}>
+                              <span style={{ fontSize: "0.7em" }}>
+                                {formatDate(v.createdAt)}
+                              </span>
+                            </Col>
+                          </Row>
+                        </a>
                         <hr></hr>
                       </>
                     ))}

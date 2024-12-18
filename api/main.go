@@ -38,6 +38,8 @@ func main() {
 	router.HandleFunc("/api/follow", handlers.Follow).Methods("POST")
 	router.HandleFunc("/api/follow", handlers.Unfollow).Methods("DELETE")
 	router.HandleFunc("/api/notification", handlers.GetNotifications).Methods("GET")
+	router.HandleFunc("/api/notification/unseenCount", handlers.GetUnseenNotificationCount).Methods("GET")
+	router.HandleFunc("/api/notification", handlers.MarkNotificationsSeen).Methods("POST")
 	router.HandleFunc("/api/ws/thread", websocket.HandleWebsocket)
 	router.PathPrefix("/avatars").Handler(http.FileServer(http.Dir("./public/")))
 	router.PathPrefix("/fonts").Handler(http.FileServer(http.Dir("./public/")))

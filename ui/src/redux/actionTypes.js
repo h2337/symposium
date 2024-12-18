@@ -1,7 +1,5 @@
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
-export const LOAD_CATEGORIES = "LOAD_CATEGORIES";
-export const OPEN_THREAD = "OPEN_THREAD";
 export const START_TOURING = "START_TOURING";
 export const STOP_TOURING = "STOP_TOURING";
 export const OPEN_TOUR = "OPEN_TOUR";

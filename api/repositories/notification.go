@@ -4,6 +4,7 @@ import (
 	"github.com/jafarlihi/symposium/api/database"
 	"github.com/jafarlihi/symposium/api/logger"
 	"github.com/jafarlihi/symposium/api/models"
+	"github.com/lib/pq"
 )
 
 func GetNotificationsByUserID(userID uint32, page uint32, pageSize uint32) ([]*models.Notification, error) {
@@ -25,4 +26,27 @@ func GetNotificationsByUserID(userID uint32, page uint32, pageSize uint32) ([]*m
 		notifications = append(notifications, notification)
 	}
 	return notifications, nil
+}
+
+func GetUnseenNotificationCountByUserID(userID uint32) (int, error) {
+	sql := "SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND seen = false"
+	row := database.Database.QueryRow(sql, userID)
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		logger.Log.Error("Failed to scan SELECTed row of notifications, error: " + err.Error())
+		return 0, err
+	}
+	return count, nil
+
+}
+
+func MarkNotificationsSeen(userID uint32, IDs []int) error {
+	sql := "UPDATE notifications SET seen = true WHERE user_id = $1 AND id = ANY($2)"
+	_, err := database.Database.Exec(sql, userID, pq.Array(IDs))
+	if err != nil {
+		logger.Log.Error("Failed to UPDATE notifications, error: " + err.Error())
+		return err
+	}
+	return nil
 }

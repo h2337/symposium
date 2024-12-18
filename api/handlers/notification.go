@@ -69,3 +69,82 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, string(jsonResult))
 }
+
+func GetUnseenNotificationCount(w http.ResponseWriter, r *http.Request) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenString := strings.Fields(tokenHeader)[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.Jwt.SigningSecret), nil
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
+		return
+	}
+	var userID float64
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID = claims["userID"].(float64)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Invalid token"}`)
+		return
+	}
+	count, err := repositories.GetUnseenNotificationCountByUserID(uint32(userID))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to get the notifications"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, "{\"count\": "+strconv.Itoa(count)+"}")
+}
+
+type markNotificationsSeenRequest struct {
+	IDs []int `json:"ids"`
+}
+
+func MarkNotificationsSeen(w http.ResponseWriter, r *http.Request) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenString := strings.Fields(tokenHeader)[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.Jwt.SigningSecret), nil
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
+		return
+	}
+	var userID float64
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID = claims["userID"].(float64)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Invalid token"}`)
+		return
+	}
+	var mnsr markNotificationsSeenRequest
+	err = json.NewDecoder(r.Body).Decode(&mnsr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
+		return
+	}
+	if len(mnsr.IDs) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "IDs field is missing or is empty"}`)
+		return
+	}
+	err = repositories.MarkNotificationsSeen(uint32(userID), mnsr.IDs)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to mark notifications seen"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

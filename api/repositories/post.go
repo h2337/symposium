@@ -91,3 +91,25 @@ func DeletePostsByThreadID(threadID uint32) error {
 	}
 	return nil
 }
+
+func GetPost(id uint32) (*models.Post, error) {
+	sql := "SELECT id, user_id, thread_id, post_number, content, created_at FROM posts WHERE id = $1"
+	row := database.Database.QueryRow(sql, id)
+	var post models.Post
+	err := row.Scan(&post.ID, &post.UserID, &post.ThreadID, &post.PostNumber, &post.Content, &post.CreatedAt)
+	if err != nil {
+		logger.Log.Error("Failed to SELECT a post, error: " + err.Error())
+		return nil, err
+	}
+	return &post, nil
+}
+
+func UpdatePostContent(id uint32, content string) error {
+	sql := "UPDATE posts SET content = $1 WHERE id = $2"
+	_, err := database.Database.Exec(sql, content, id)
+	if err != nil {
+		logger.Log.Error("Failed to UPDATE a post, error: " + err.Error())
+		return err
+	}
+	return nil
+}

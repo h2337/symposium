@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 	"github.com/jafarlihi/symposium/api/config"
 	"github.com/jafarlihi/symposium/api/repositories"
 	"io"
@@ -130,6 +131,77 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to create the post"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+type updatePostRequest struct {
+	Token   string `json:"token"`
+	Content string `json:"content"`
+}
+
+func UpdatePost(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	idString := params["id"]
+	id, err := strconv.ParseUint(idString, 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Provided ID can't be parsed as an integer"}`)
+		return
+	}
+	var upr updatePostRequest
+	err = json.NewDecoder(r.Body).Decode(&upr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
+		return
+	}
+	if upr.Token == "" || upr.Content == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Token and/or content field(s) is/are missing"}`)
+		return
+	}
+	post, err := repositories.GetPost(uint32(id))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to get the post"}`)
+		return
+	}
+	token, err := jwt.Parse(upr.Token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.Jwt.SigningSecret), nil
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
+		return
+	}
+	var userID float64
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID = claims["userID"].(float64)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Invalid token"}`)
+		return
+	}
+	user, err := repositories.GetUser(uint32(userID))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to fetch the user from database"}`)
+		return
+	}
+	if user.Access != 99 && user.ID != post.UserID {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "User lacks the necessary privileges to update the post"}`)
+		return
+	}
+	err = repositories.UpdatePostContent(post.ID, upr.Content)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to update the post"}`)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

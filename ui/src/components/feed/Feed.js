@@ -223,74 +223,76 @@ function Feed(props) {
                     onClick={() => openThread(v)}
                     style={{ marginBottom: "10px" }}
                   >
-                    <Container fluid>
-                      <Row style={{ marginBottom: "5px" }}>
-                        <img
-                          src={
-                            "http://" +
-                            process.env.API_URL +
-                            "/avatars/" +
-                            v.userID
-                          }
-                          width="40"
-                          height="40"
-                          style={{
-                            borderRadius: "50%",
-                            marginRight: "10px",
-                          }}
-                        />
-                        <div style={{ display: "inline" }}>
-                          <h6
+                    <a>
+                      <Container fluid>
+                        <Row style={{ marginBottom: "5px" }}>
+                          <img
+                            src={
+                              "http://" +
+                              process.env.API_URL +
+                              "/avatars/" +
+                              v.userID
+                            }
+                            width="40"
+                            height="40"
                             style={{
-                              marginBottom: 0,
-                              fontWeight: "bold",
-                              fontSize: "1em",
-                            }}
-                          >
-                            {v != undefined && v.title}
-                          </h6>
-                          <span
-                            style={{
-                              fontSize: "0.7em",
+                              borderRadius: "50%",
                               marginRight: "10px",
-                              color: "gray",
-                              fontWeight: "bolder",
                             }}
-                          >
-                            {new Date(v.createdAt).toDateString()}
-                          </span>
-                        </div>
-                        <div className="ml-auto">
-                          <Badge
-                            style={{
-                              backgroundColor:
-                                "#" +
-                                categories.find(
-                                  (category) => category.id === v.categoryID
-                                ).color,
-                            }}
-                          >
-                            <span style={{ color: "white" }}>
-                              {" "}
-                              {
-                                categories.find(
-                                  (category) => category.id === v.categoryID
-                                ).name
-                              }
+                          />
+                          <div style={{ display: "inline" }}>
+                            <h6
+                              style={{
+                                marginBottom: 0,
+                                fontWeight: "bold",
+                                fontSize: "1em",
+                              }}
+                            >
+                              {v != undefined && v.title}
+                            </h6>
+                            <span
+                              style={{
+                                fontSize: "0.7em",
+                                marginRight: "10px",
+                                color: "gray",
+                                fontWeight: "bolder",
+                              }}
+                            >
+                              {new Date(v.createdAt).toDateString()}
                             </span>
-                          </Badge>{" "}
-                          <i className="fa fa-comments"></i>{" "}
-                          <span
-                            style={{
-                              fontSize: "0.8em",
-                              fontWeight: "bolder",
-                            }}
-                          >
-                            {v.postCount}
-                          </span>
-                        </div>
-                      </Row>
-                    </Container>
+                          </div>
+                          <div className="ml-auto">
+                            <Badge
+                              style={{
+                                backgroundColor:
+                                  "#" +
+                                  categories.find(
+                                    (category) => category.id === v.categoryID
+                                  ).color,
+                              }}
+                            >
+                              <span style={{ color: "white" }}>
+                                {" "}
+                                {
+                                  categories.find(
+                                    (category) => category.id === v.categoryID
+                                  ).name
+                                }
+                              </span>
+                            </Badge>{" "}
+                            <i className="fa fa-comments"></i>{" "}
+                            <span
+                              style={{
+                                fontSize: "0.8em",
+                                fontWeight: "bolder",
+                              }}
+                            >
+                              {v.postCount}
+                            </span>
+                          </div>
+                        </Row>
+                      </Container>
+                    </a>
                   </div>
                 </div>
               ))}

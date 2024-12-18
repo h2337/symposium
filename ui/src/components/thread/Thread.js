@@ -11,7 +11,8 @@ import { LOAD_CATEGORIES, LOGIN } from "../../redux/actionTypes";
 import { getThread } from "../../api/thread";
 import { getPosts } from "../../api/post";
 import { getCategories } from "../../api/category";
-import Reply from "./Reply";
+import ReplyModal from "./ReplyModal";
+import EditModal from "./EditModal";
 
 function Thread(props) {
   const [posts, setPosts] = useState([]);
@@ -166,7 +167,7 @@ function Thread(props) {
                 <>
                   <br></br>
                   <br></br>
-                  <Reply
+                  <ReplyModal
                     threadID={threadID}
                     postReplyCallback={postReplyCallback}
                   />
@@ -178,7 +179,7 @@ function Thread(props) {
           <Row>
             <Col xs="2">
               {!isMobile && isLoggedIn && (
-                <Reply
+                <ReplyModal
                   threadID={threadID}
                   postReplyCallback={postReplyCallback}
                 />
@@ -226,6 +227,12 @@ function Thread(props) {
                             >
                               {v.username}
                             </Link>
+                            {v.userID == props.userID ||
+                            props.access == "99" ? (
+                              <EditModal post={v} />
+                            ) : (
+                              <></>
+                            )}
                           </div>
                           <div
                             dangerouslySetInnerHTML={{
@@ -261,6 +268,8 @@ function mapStateToProps(state) {
   return {
     token: state.user.token,
     username: state.user.username,
+    userID: state.user.id,
+    access: state.user.access,
     thread: state.thread.currentThread,
     categories: state.category.categories,
   };

@@ -22,3 +22,10 @@ export function createPost(token, threadID, content) {
     body: JSON.stringify({ token, threadID, content }),
   });
 }
+
+export function editPost(token, postID, content) {
+  return fetch("http://" + process.env.API_URL + "/post/" + postID, {
+    method: "PATCH",
+    body: JSON.stringify({ token, content }),
+  });
+}

@@ -29,6 +29,7 @@ func main() {
 	router.HandleFunc("/thread/{id}", handlers.GetThread).Methods("GET")
 	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
+	router.HandleFunc("/post/{id}", handlers.UpdatePost).Methods("PATCH")
 	router.HandleFunc("/user", handlers.CreateUser).Methods("POST")
 	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
 	router.HandleFunc("/user/avatar", handlers.UploadAvatar).Methods("POST")

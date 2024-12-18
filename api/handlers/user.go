@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 )
 
@@ -50,7 +51,6 @@ type accountCreationRequest struct {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	// TODO: Add validation
 	var acr accountCreationRequest
 	err := json.NewDecoder(r.Body).Decode(&acr)
 	if err != nil {
@@ -61,6 +61,16 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if acr.Username == "" || acr.Email == "" || acr.Password == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "Username, email, or password field(s) is/are missing"}`)
+		return
+	}
+	if !regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`).MatchString(acr.Email) {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Provided email address is malformed"}`)
+		return
+	}
+	if len(acr.Password) < 6 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Password length can't be smaller than 6"}`)
 		return
 	}
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(acr.Password), bcrypt.DefaultCost)

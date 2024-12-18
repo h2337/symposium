@@ -38,7 +38,6 @@ func GetUnseenNotificationCountByUserID(userID uint32) (int, error) {
 		return 0, err
 	}
 	return count, nil
-
 }
 
 func MarkNotificationsSeen(userID uint32, IDs []int) error {

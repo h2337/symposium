@@ -81,7 +81,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	a := avatar.NewWithConfig(avatarConfig)
 	avatarBytes, _ := a.DrawToBytes(acr.Username, 128)
-	err = ioutil.WriteFile("./public/avatars/"+strconv.FormatInt(id, 10)+".jpg", avatarBytes, 0644)
+	err = ioutil.WriteFile("./public/avatars/"+strconv.FormatInt(id, 10), avatarBytes, 0644)
 	if err != nil {
 		logger.Log.Error("Failed to create the user avatar, error: " + err.Error())
 	}

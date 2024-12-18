@@ -21,15 +21,16 @@ Run `build.sh` and then run `./build/api`.
 - [x] Infinite scroll of profile posts
 - [x] Real-time thread feed updates
 - [x] Generate user avatars
-- [ ] Ability to change avatars
+- [x] Ability to change avatars
 - [ ] Real-time thread post updates
 - [ ] Real-time chat
-- [ ] Design overhaul
 - [ ] Ability to change site name/logo/favicon
 - [ ] Ability to manage users
 - [ ] Ability to delete posts
 - [ ] Ability to edit posts
 - [ ] Moderator user access
+- [ ] Moderator ability to delete/edit posts
+- [ ] Site installation prompts
 - [ ] Mentions
 - [ ] Notifications
 - [ ] Notification user settings
@@ -37,9 +38,9 @@ Run `build.sh` and then run `./build/api`.
 - [ ] Online/offline indicator
 - [ ] Themability
 - [ ] Extension architecture
-- [ ] Show thread/post creation/update time
+- [ ] Post updates
 - [ ] Reply quotes
-- [ ] Show reply count
+- [x] Show reply count
 - [ ] Show user post/thread statistics
 - [ ] Show/hide user email in profiles
 - [ ] Ability to make site invite-only
@@ -50,3 +51,5 @@ Run `build.sh` and then run `./build/api`.
 - [ ] Site statistics for admin
 - [ ] Better editor
 - [ ] Data backup/restore
+- [ ] Spam prevention
+- [ ] Rate limiting

@@ -15,6 +15,7 @@ import { createUseStyles } from "react-jss";
 import InfiniteScroll from "react-infinite-scroller";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
+import queryString from "query-string";
 import { getCategories } from "../../api/category";
 import { getThreads } from "../../api/thread";
 import NewThread from "./NewThread";
@@ -54,6 +55,7 @@ function Feed(props) {
     } else {
       setIsLoggedIn(false);
       if (
+        queryString.parse(props.location.search).loggedOut != "1" &&
         cookies.token !== undefined &&
         cookies.token.length > 0 &&
         cookies.username !== undefined &&

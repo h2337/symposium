@@ -19,7 +19,7 @@ function Header(props) {
     removeCookie("access", { path: "/" });
     removeCookie("email", { path: "/" });
     props.onLogout();
-    history.push("/");
+    history.push("/?loggedOut=1");
     toast.success("Logged out.");
   }
 

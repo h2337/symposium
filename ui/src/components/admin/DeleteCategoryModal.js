@@ -1,12 +1,28 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { deleteCategory } from "../../api/category";
 import { toast } from "react-toastify";
+import { connect } from "react-redux";
 
 function DeleteCategoryModal(props) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  function handleDelete() {
+    deleteCategory(props.token, props.id)
+      .then((r) => {
+        if (r.status === 200) {
+          handleClose();
+          toast.success("Category deleted.");
+          props.postDeleteCallback();
+        } else {
+          toast.error("Failed to delete the category, try again.");
+        }
+      })
+      .catch((e) => toast.error("Failed to delete the category, try again."));
+  }
 
   return (
     <>
@@ -27,7 +43,7 @@ function DeleteCategoryModal(props) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="danger" onClick={handleClose}>
+          <Button variant="danger" onClick={handleDelete}>
             Delete
           </Button>
         </Modal.Footer>
@@ -36,4 +52,10 @@ function DeleteCategoryModal(props) {
   );
 }
 
-export default DeleteCategoryModal;
+function mapStateToProps(state) {
+  return {
+    token: state.user.token,
+  };
+}
+
+export default connect(mapStateToProps)(DeleteCategoryModal);

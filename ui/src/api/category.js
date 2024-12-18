@@ -10,3 +10,10 @@ export function createCategory(token, name, color) {
     body: JSON.stringify({ token, name, color }),
   });
 }
+
+export function deleteCategory(token, id) {
+  return fetch(process.env.API_URL + "/category", {
+    method: "DELETE",
+    body: JSON.stringify({ token, id }),
+  });
+}

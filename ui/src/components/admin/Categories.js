@@ -134,7 +134,11 @@ function Categories(props) {
                 <div style={{ float: "right" }}>
                   <Button variant="primary">Edit</Button>
                   &nbsp;
-                  <DeleteCategoryModal name={v.name} id={v.id} />
+                  <DeleteCategoryModal
+                    name={v.name}
+                    id={v.id}
+                    postDeleteCallback={getCategories}
+                  />
                 </div>
               </div>
               <hr></hr>

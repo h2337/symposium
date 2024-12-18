@@ -1,8 +1,8 @@
 ### Symposium
 #### Screenshots
 <p align="center">
-  <img src="https://github.com/jafarlihi/symposium/master/repo/screenshots/2.png?raw=true">
-  <img src="https://github.com/jafarlihi/symposium/master/repo/screenshots/1.png?raw=true">
+  <img src="https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/2.png?token=AKL72S626G33MJ4FQG4VLNC6XJ4OA">
+  <img src="https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/1.png?token=AKL72S62EONJ2CXOFZIBIRC6XJ4PM">
 </p>
 #### Installation
 Write down PostgreSQL details, JWT signing secret, and port to `./api/config.json`.

@@ -6,11 +6,18 @@ import SignInModal from "./SignInModal";
 import { toast } from "react-toastify";
 import { LOGOUT } from "../../../redux/actionTypes";
 import { useHistory, Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 function Header(props) {
   const history = useHistory();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
 
   function handleLogout() {
+    removeCookie("username", { path: "/" });
+    removeCookie("userID", { path: "/" });
+    removeCookie("token", { path: "/" });
+    removeCookie("access", { path: "/" });
+    removeCookie("email", { path: "/" });
     props.onLogout();
     history.push("/");
     toast.success("Logged out.");

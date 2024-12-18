@@ -6,8 +6,10 @@ import { useEffect } from "react";
 import { getThread } from "../../api/thread";
 import { getPosts } from "../../api/post";
 import { getCategories } from "../../api/category";
-import { LOAD_CATEGORIES } from "../../redux/actionTypes";
+import { LOAD_CATEGORIES, LOGIN } from "../../redux/actionTypes";
 import { toast } from "react-toastify";
+import { useMediaQuery } from "react-responsive";
+import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
 import DOMPurify from "dompurify";
 import Reply from "./Reply";
@@ -18,6 +20,8 @@ function Thread(props) {
   const [thread, setThread] = useState(undefined);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(undefined);
+  const [cookies, setCookie] = useCookies([]);
+  const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
   const { threadID } = useParams();
   useEffect(() => {
     Thread.postPage = 0;
@@ -53,6 +57,20 @@ function Thread(props) {
         .catch((e) => toast.error("Failed to load the categories"));
     } else {
       setCategories(props.categories);
+    }
+    if (
+      cookies.token !== undefined &&
+      cookies.token.length > 0 &&
+      cookies.username !== undefined &&
+      cookies.username.length > 0
+    ) {
+      props.onLogin(
+        cookies.username,
+        cookies.userID,
+        cookies.email,
+        cookies.access,
+        cookies.token
+      );
     }
   }, []);
 
@@ -109,16 +127,24 @@ function Thread(props) {
                 <span>{category.name}</span>
               </Badge>
               <h3>{thread.title}</h3>
+              {isMobile && (
+                <Reply
+                  threadID={threadID}
+                  postReplyCallback={postReplyCallback}
+                />
+              )}
             </Col>
           </Row>
           <br></br>
           <Row>
-            <Col xs="1">
-              <Reply
-                threadID={threadID}
-                postReplyCallback={postReplyCallback}
-              />
-            </Col>
+            {!isMobile && (
+              <Col xs="1">
+                <Reply
+                  threadID={threadID}
+                  postReplyCallback={postReplyCallback}
+                />
+              </Col>
+            )}
             <Col xs="11">
               <InfiniteScroll
                 loadMore={loadPosts}
@@ -175,6 +201,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => ({
   onCategoryLoad: (categories) =>
     dispatch({ type: LOAD_CATEGORIES, categories }),
+  onLogin: (username, id, email, access, token) =>
+    dispatch({ type: LOGIN, username, id, email, access, token }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Thread);

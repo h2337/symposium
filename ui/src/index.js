@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { CookiesProvider } from "react-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,16 +16,18 @@ import "react-toastify/dist/ReactToastify.css";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
-      <Router>
-        <Header />
-        <Switch>
-          <Route exact path="/" component={Feed} />
-          <Route path="/category/:categoryID" component={Feed} />
-          <Route path="/thread/:threadID" component={Thread} />
-          <Route path="/admin" component={Admin} />
-        </Switch>
-      </Router>
+      <CookiesProvider>
+        <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
+        <Router>
+          <Header />
+          <Switch>
+            <Route exact path="/" component={Feed} />
+            <Route path="/category/:categoryID" component={Feed} />
+            <Route path="/thread/:threadID" component={Thread} />
+            <Route path="/admin" component={Admin} />
+          </Switch>
+        </Router>
+      </CookiesProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import NewThread from "./NewThread";
-import { LOAD_CATEGORIES, OPEN_THREAD } from "../../redux/actionTypes";
+import { LOGIN, LOAD_CATEGORIES, OPEN_THREAD } from "../../redux/actionTypes";
 import {
   Container,
   Row,
@@ -18,24 +18,49 @@ import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroller";
 import { Link, useParams, useHistory } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
+import { useCookies } from "react-cookie";
 
 function Feed(props) {
   const [threads, setThreads] = useState([]);
   const [hasMoreThreads, setHasMoreThreads] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { categoryID } = useParams();
+  const [cookies, setCookie] = useCookies([]);
   const history = useHistory();
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
+
+  useEffect(() => {
+    if (
+      props.token !== undefined &&
+      props.token.length > 0 &&
+      props.username !== undefined &&
+      props.username.length > 0
+    ) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      if (
+        cookies.token !== undefined &&
+        cookies.token.length > 0 &&
+        cookies.username !== undefined &&
+        cookies.username.length > 0
+      ) {
+        props.onLogin(
+          cookies.username,
+          cookies.userID,
+          cookies.email,
+          cookies.access,
+          cookies.token
+        );
+      }
+    }
+  }, [props.token]);
 
   useEffect(() => {
     resetFeed();
     initialLoad();
   }, [categoryID]);
-
-  let isLoggedIn = false; // TODO: Does this belong here?
-  if (props.username.length > 0 && props.token.length > 0) {
-    isLoggedIn = true;
-  }
 
   async function initialLoad() {
     await loadCategories();
@@ -255,6 +280,8 @@ const mapDispatchToProps = (dispatch) => ({
   onCategoryLoad: (categories) =>
     dispatch({ type: LOAD_CATEGORIES, categories }),
   onThreadOpen: (thread) => dispatch({ type: OPEN_THREAD, thread }),
+  onLogin: (username, id, email, access, token) =>
+    dispatch({ type: LOGIN, username, id, email, access, token }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Feed);

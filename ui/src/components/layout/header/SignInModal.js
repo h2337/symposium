@@ -4,11 +4,13 @@ import { createToken } from "../../../api/token";
 import { toast } from "react-toastify";
 import { connect } from "react-redux";
 import { LOGIN } from "../../../redux/actionTypes";
+import { useCookies } from "react-cookie";
 
 function SignInModal(props) {
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [cookies, setCookie] = useCookies([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -28,6 +30,11 @@ function SignInModal(props) {
               responseBodyObject.user.access,
               responseBodyObject.token
             );
+            setCookie("username", username, { path: "/" });
+            setCookie("userID", responseBodyObject.user.id, { path: "/" });
+            setCookie("email", responseBodyObject.user.email, { path: "/" });
+            setCookie("access", responseBodyObject.user.access, { path: "/" });
+            setCookie("token", responseBodyObject.token, { path: "/" });
           });
         } else {
           toast.error("Login failed, try again."); // TODO: Show detailed error

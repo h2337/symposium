@@ -18,6 +18,7 @@ func main() {
 	websocket.InitChannels()
 
 	router := mux.NewRouter()
+	router.HandleFunc("/setting", handlers.GetSettings).Methods("GET")
 	router.HandleFunc("/token", handlers.CreateToken).Methods("POST")
 	router.HandleFunc("/category", handlers.GetCategories).Methods("GET")
 	router.HandleFunc("/category", handlers.CreateCategory).Methods("POST")

@@ -1,3 +1,8 @@
+CREATE TABLE settings (
+    name character varying NOT NULL UNIQUE,
+    value character varying NOT NULL
+);
+
 CREATE TABLE users (
     id serial NOT NULL,
     username character varying NOT NULL UNIQUE,
@@ -37,4 +42,6 @@ CREATE TABLE posts (
     FOREIGN KEY (thread_id) REFERENCES threads (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+INSERT INTO settings (name, value) VALUES ('site_name', 'Symposium');
 

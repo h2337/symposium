@@ -60,7 +60,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	var posts interface{}
+	var posts interface{} // TODO: Why interface?
 	if threadIDExists {
 		posts, err = repositories.GetPostsByThreadID(uint32(threadID), uint32(page), uint32(pageSize))
 	}

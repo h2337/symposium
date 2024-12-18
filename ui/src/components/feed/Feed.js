@@ -114,7 +114,7 @@ function Feed(props) {
       transition: "0.3s",
       borderRadius: "5px",
       "&:hover": {
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#f8f9fa",
       },
     },
   })();
@@ -218,6 +218,7 @@ function Feed(props) {
                   <div
                     className={classes.feedThreadBox}
                     onClick={() => openThread(v)}
+                    style={{ marginBottom: "10px" }}
                   >
                     <Container fluid>
                       <Row style={{ marginBottom: "5px" }}>
@@ -229,41 +230,54 @@ function Feed(props) {
                             v.userID +
                             ".jpg"
                           }
-                          width="50"
-                          height="50"
-                          style={{ borderRadius: "50%", marginRight: "10px" }}
+                          width="40"
+                          height="40"
+                          style={{
+                            borderRadius: "50%",
+                            marginRight: "10px",
+                          }}
                         />
                         <div style={{ display: "inline" }}>
-                          <h5 style={{ marginBottom: 0 }}>
-                            {v != undefined && v.title}
-                          </h5>
-                          <i
-                            className="fa fa-circle fa-xs"
+                          <h6
                             style={{
-                              color:
+                              marginBottom: 0,
+                              fontWeight: "bold",
+                              fontSize: "1em",
+                            }}
+                          >
+                            {v != undefined && v.title}
+                          </h6>
+                          <span
+                            style={{
+                              fontSize: "0.7em",
+                              marginRight: "10px",
+                              color: "gray",
+                              fontWeight: "bolder",
+                            }}
+                          >
+                            {new Date(v.createdAt).toDateString()}
+                          </span>
+                        </div>
+                        <div className="ml-auto">
+                          <Badge
+                            variant="light"
+                            style={{
+                              backgroundColor:
                                 "#" +
                                 categories.find(
                                   (category) => category.id === v.categoryID
                                 ).color,
-                              fontSize: 10,
-                            }}
-                          ></i>{" "}
-                          {
-                            categories.find(
-                              (category) => category.id === v.categoryID
-                            ).name
-                          }
-                        </div>
-                        <div className="ml-auto">
-                          <i
-                            style={{
-                              fontSize: "0.8em",
-                              marginRight: "10px",
-                              color: "gray",
                             }}
                           >
-                            {new Date(v.createdAt).toDateString()}
-                          </i>
+                            <span style={{ color: "white" }}>
+                              {" "}
+                              {
+                                categories.find(
+                                  (category) => category.id === v.categoryID
+                                ).name
+                              }
+                            </span>
+                          </Badge>{" "}
                           <i className="fa fa-comments"></i> {v.postCount}
                         </div>
                       </Row>

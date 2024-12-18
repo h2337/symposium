@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams, Link, useHistory } from "react-router-dom";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
@@ -84,12 +84,34 @@ function Profile(props) {
     <Container>
       <br></br>
       <Row>
-        <img
-          src={"http://" + process.env.API_URL + "/avatars/" + userID + ".jpg"}
-          width="100"
-          height="100"
-          style={{ borderRadius: "50%" }}
-        />
+        <div>
+          <img
+            src={
+              "http://" + process.env.API_URL + "/avatars/" + userID + ".jpg"
+            }
+            width="100"
+            height="100"
+            style={{ borderRadius: "50%" }}
+          />
+          {props.userID === userID && (
+            <div
+              variant="outline-primary"
+              style={{
+                width: "45px",
+                height: "20px",
+                borderRadius: "5px",
+                top: "50%",
+                left: "50%",
+                transform: "translate(60%, -100%)",
+                color: "white",
+                fontSize: "0.8em",
+                backgroundColor: "rgba(200, 200, 200, 0.5)",
+              }}
+            >
+              Change
+            </div>
+          )}
+        </div>
         <div style={{ paddingTop: "50px", paddingLeft: "50px" }}>
           {user !== undefined && user.username}
         </div>

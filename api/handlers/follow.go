@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func GetFollow(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +54,6 @@ func GetFollow(w http.ResponseWriter, r *http.Request) {
 }
 
 type followRequest struct {
-	Token    string `json:"token"`
 	UserID   uint32 `json:"userID"`
 	ThreadID uint32 `json:"threadID"`
 }
@@ -66,12 +66,20 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if fr.Token == "" || fr.UserID == 0 || fr.ThreadID == 0 {
+	if fr.UserID == 0 || fr.ThreadID == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "Token, userID, and/or threadID field(s) is/are missing"}`)
 		return
 	}
-	token, err := jwt.Parse(fr.Token, func(token *jwt.Token) (interface{}, error) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
@@ -105,7 +113,6 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 }
 
 type unfollowRequest struct {
-	Token    string `json:"token"`
 	UserID   uint32 `json:"userID"`
 	ThreadID uint32 `json:"threadID"`
 }
@@ -118,12 +125,20 @@ func Unfollow(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if ufr.Token == "" || ufr.UserID == 0 || ufr.ThreadID == 0 {
+	if ufr.UserID == 0 || ufr.ThreadID == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "Token, userID, and/or threadID field(s) is/are missing"}`)
 		return
 	}
-	token, err := jwt.Parse(ufr.Token, func(token *jwt.Token) (interface{}, error) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}

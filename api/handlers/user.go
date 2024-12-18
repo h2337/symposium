@@ -16,6 +16,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -126,13 +127,15 @@ func UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-	token := r.FormValue("token")
-	if token == "" {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Token field is missing"}`)
+		io.WriteString(w, `{"error: "Token is missing"}`)
 		return
 	}
-	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	tokenString := tokenFields[1]
+	parsedToken, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}

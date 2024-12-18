@@ -7,13 +7,19 @@ export function getCategories() {
 export function createCategory(token, name, color) {
   return fetch("http://" + process.env.API_URL + "/api/category", {
     method: "POST",
-    body: JSON.stringify({ token, name, color }),
+    body: JSON.stringify({ name, color }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }
 
 export function deleteCategory(token, id) {
   return fetch("http://" + process.env.API_URL + "/api/category", {
     method: "DELETE",
-    body: JSON.stringify({ token, id }),
+    body: JSON.stringify({ id }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }

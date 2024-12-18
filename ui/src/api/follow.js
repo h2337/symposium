@@ -12,7 +12,10 @@ export function follow(token, userID, threadID) {
   threadID = parseInt(threadID);
   return fetch("http://" + process.env.API_URL + "/api/follow", {
     method: "POST",
-    body: JSON.stringify({ token, userID, threadID }),
+    body: JSON.stringify({ userID, threadID }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }
 
@@ -21,6 +24,9 @@ export function unfollow(token, userID, threadID) {
   threadID = parseInt(threadID);
   return fetch("http://" + process.env.API_URL + "/api/follow", {
     method: "DELETE",
-    body: JSON.stringify({ token, userID, threadID }),
+    body: JSON.stringify({ userID, threadID }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }

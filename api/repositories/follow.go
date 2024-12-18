@@ -62,3 +62,13 @@ func CreateFollow(userID uint32, threadID uint32) (int64, error) {
 	}
 	return id, nil
 }
+
+func DeleteFollowsByThreadID(threadID uint32) error {
+	sql := "DELETE FROM follows WHERE thread_id = $1"
+	_, err := database.Database.Exec(sql, threadID)
+	if err != nil {
+		logger.Log.Error("Failed to DELETE a follow, error: " + err.Error())
+		return err
+	}
+	return nil
+}

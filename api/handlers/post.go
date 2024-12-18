@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +86,6 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 type postCreationRequest struct {
-	Token    string `json:"token"`
 	ThreadID uint32 `json:"threadID"`
 	Content  string `json:"content"`
 }
@@ -98,12 +98,20 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if pcr.Token == "" || pcr.ThreadID == 0 || pcr.Content == "" {
+	if pcr.ThreadID == 0 || pcr.Content == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Token, threadID, and/or content field(s) is/are missing"}`)
+		io.WriteString(w, `{"error": "threadID and/or content field(s) is/are missing"}`)
 		return
 	}
-	token, err := jwt.Parse(pcr.Token, func(token *jwt.Token) (interface{}, error) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
@@ -139,7 +147,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 type updatePostRequest struct {
-	Token   string `json:"token"`
 	Content string `json:"content"`
 }
 
@@ -159,9 +166,9 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if upr.Token == "" || upr.Content == "" {
+	if upr.Content == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Token and/or content field(s) is/are missing"}`)
+		io.WriteString(w, `{"error": "Content field is missing"}`)
 		return
 	}
 	post, err := repositories.GetPost(uint32(id))
@@ -170,7 +177,15 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Failed to get the post"}`)
 		return
 	}
-	token, err := jwt.Parse(upr.Token, func(token *jwt.Token) (interface{}, error) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}

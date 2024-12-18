@@ -33,7 +33,13 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tokenHeader := r.Header.Get("Authorization")
-	tokenString := strings.Fields(tokenHeader)[1]
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -72,7 +78,13 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 
 func GetUnseenNotificationCount(w http.ResponseWriter, r *http.Request) {
 	tokenHeader := r.Header.Get("Authorization")
-	tokenString := strings.Fields(tokenHeader)[1]
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -108,7 +120,13 @@ type markNotificationsSeenRequest struct {
 
 func MarkNotificationsSeen(w http.ResponseWriter, r *http.Request) {
 	tokenHeader := r.Header.Get("Authorization")
-	tokenString := strings.Fields(tokenHeader)[1]
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])

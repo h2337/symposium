@@ -61,3 +61,13 @@ func CreateThreadFollowNotification(userID uint32, content string, link string, 
 	}
 	return id, nil
 }
+
+func DeleteNotificationsByThreadID(threadID uint32) error {
+	sql := "DELETE FROM notifications WHERE thread_id = $1"
+	_, err := database.Database.Exec(sql, threadID)
+	if err != nil {
+		logger.Log.Error("Failed to DELETE a notification, error: " + err.Error())
+		return err
+	}
+	return nil
+}

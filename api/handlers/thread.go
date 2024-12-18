@@ -13,6 +13,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func GetThread(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +86,6 @@ func GetThreads(w http.ResponseWriter, r *http.Request) {
 }
 
 type threadCreationRequest struct {
-	Token      string `json:"token"`
 	Title      string `json:"title"`
 	CategoryID uint32 `json:"categoryID"`
 	Content    string `json:"content"`
@@ -99,12 +99,20 @@ func CreateThread(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if tcr.Token == "" || tcr.Title == "" || tcr.CategoryID == 0 || tcr.Content == "" {
+	if tcr.Title == "" || tcr.CategoryID == 0 || tcr.Content == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Token, name, categoryID, and/or content field(s) is/are missing"}`)
+		io.WriteString(w, `{"error": "Name, categoryID, and/or content field(s) is/are missing"}`)
 		return
 	}
-	token, err := jwt.Parse(tcr.Token, func(token *jwt.Token) (interface{}, error) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}

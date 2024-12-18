@@ -19,13 +19,19 @@ export function getPostsByUserID(userID, page, pageSize) {
 export function createPost(token, threadID, content) {
   return fetch("http://" + process.env.API_URL + "/api/post", {
     method: "POST",
-    body: JSON.stringify({ token, threadID, content }),
+    body: JSON.stringify({ threadID, content }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }
 
 export function editPost(token, postID, content) {
   return fetch("http://" + process.env.API_URL + "/api/post/" + postID, {
     method: "PATCH",
-    body: JSON.stringify({ token, content }),
+    body: JSON.stringify({ content }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }

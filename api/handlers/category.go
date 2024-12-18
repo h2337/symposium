@@ -8,6 +8,7 @@ import (
 	"github.com/jafarlihi/symposium/api/repositories"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func GetCategories(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +45,44 @@ func DeleteCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "CategoryID parameter is missing"}`)
 		return
 	}
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.Jwt.SigningSecret), nil
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
+		return
+	}
+	var userID float64
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID = claims["userID"].(float64)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Invalid token"}`)
+		return
+	}
+	user, err := repositories.GetUser(uint32(userID))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to fetch the user from database"}`)
+		return
+	}
+	if user.Access != 99 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "User lacks the necessary privileges to create a category"}`)
+		return
+	}
 	threads, err := repositories.GetAllThreadsByCategoryID(cdr.ID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -51,7 +90,19 @@ func DeleteCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for _, thread := range threads {
-		err := repositories.DeletePostsByThreadID(thread.ID)
+		err := repositories.DeleteNotificationsByThreadID(thread.ID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, `{"error": "Failed to delete the notifications of a thread in the category"}`)
+			return
+		}
+		err = repositories.DeleteFollowsByThreadID(thread.ID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, `{"error": "Failed to delete the follow of a thread in the category"}`)
+			return
+		}
+		err = repositories.DeletePostsByThreadID(thread.ID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			io.WriteString(w, `{"error": "Failed to delete the posts of a thread in the category"}`)
@@ -74,7 +125,6 @@ func DeleteCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 type categoryCreationRequest struct {
-	Token string `json:"token"`
 	Name  string `json:"name"`
 	Color string `json:"color"`
 }
@@ -87,12 +137,20 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if ccr.Token == "" || ccr.Name == "" || ccr.Color == "" {
+	if ccr.Name == "" || ccr.Color == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Token, name, and/or color field(s) is/are missing"}`)
+		io.WriteString(w, `{"error": "Name, and/or color field(s) is/are missing"}`)
 		return
 	}
-	token, err := jwt.Parse(ccr.Token, func(token *jwt.Token) (interface{}, error) {
+	tokenHeader := r.Header.Get("Authorization")
+	tokenFields := strings.Fields(tokenHeader)
+	if len(tokenFields) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error: "Token is missing"}`)
+		return
+	}
+	tokenString := tokenFields[1]
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}

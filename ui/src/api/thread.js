@@ -18,6 +18,9 @@ export function getThread(id) {
 export function createThread(token, title, content, categoryId) {
   return fetch("http://" + process.env.API_URL + "/api/thread", {
     method: "POST",
-    body: JSON.stringify({ token, title, content, categoryId }),
+    body: JSON.stringify({ title, content, categoryId }),
+    headers: new Headers({
+      Authorization: "Bearer " + token,
+    }),
   });
 }

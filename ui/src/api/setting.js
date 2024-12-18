@@ -4,6 +4,7 @@ export function getSettings() {
   });
 }
 
+// TODO: No token?
 export function updateSettings(settings) {
   return fetch("http://" + process.env.API_URL + "/api/setting", {
     method: "POST",

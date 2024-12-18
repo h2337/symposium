@@ -3,10 +3,10 @@ package main
 import (
 	gorillaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/jafarlihi/symposium/backend/config"
-	"github.com/jafarlihi/symposium/backend/database"
-	"github.com/jafarlihi/symposium/backend/handlers"
-	"github.com/jafarlihi/symposium/backend/logger"
+	"github.com/jafarlihi/symposium/api/config"
+	"github.com/jafarlihi/symposium/api/database"
+	"github.com/jafarlihi/symposium/api/handlers"
+	"github.com/jafarlihi/symposium/api/logger"
 	"net/http"
 )
 
@@ -27,6 +27,7 @@ func main() {
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
 	router.HandleFunc("/user", handlers.CreateUserHandler).Methods("POST")
 	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
+	router.HandleFunc("/ws", handlers.HandleWebsocket)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
 	origins := gorillaHandlers.AllowedOrigins([]string{"*"})

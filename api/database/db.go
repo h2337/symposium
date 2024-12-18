@@ -2,8 +2,8 @@ package database
 
 import (
 	"database/sql"
-	"github.com/jafarlihi/symposium/backend/config"
-	"github.com/jafarlihi/symposium/backend/logger"
+	"github.com/jafarlihi/symposium/api/config"
+	"github.com/jafarlihi/symposium/api/logger"
 	_ "github.com/lib/pq"
 	"io/ioutil"
 	"os"

@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/jafarlihi/symposium/backend/logger"
+	"github.com/jafarlihi/symposium/api/logger"
 	"os"
 )
 

@@ -1,9 +1,9 @@
 package repositories
 
 import (
-	"github.com/jafarlihi/symposium/backend/database"
-	"github.com/jafarlihi/symposium/backend/logger"
-	"github.com/jafarlihi/symposium/backend/models"
+	"github.com/jafarlihi/symposium/api/database"
+	"github.com/jafarlihi/symposium/api/logger"
+	"github.com/jafarlihi/symposium/api/models"
 )
 
 func GetCategories() ([]*models.Category, error) {

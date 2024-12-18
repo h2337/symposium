@@ -17,10 +17,10 @@ function GeneralSettings(props) {
             setSettings(responseBodyObject);
           });
         } else {
-          toast.error("Failed to load the settings");
+          toast.error("Failed to load the settings.");
         }
       })
-      .catch((e) => toast.error("Failed to load the settings"));
+      .catch((e) => toast.error("Failed to load the settings."));
   }, []);
 
   function handleChange(event) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams, Link } from "react-router-dom";
-import { Spinner, Container, Row, Col, Badge, Card } from "react-bootstrap";
+import { Spinner, Container, Row, Col, Badge, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
@@ -11,6 +11,7 @@ import { LOAD_CATEGORIES, LOGIN } from "../../redux/actionTypes";
 import { getThread } from "../../api/thread";
 import { getPosts } from "../../api/post";
 import { getCategories } from "../../api/category";
+import { getFollow, follow, unfollow } from "../../api/follow";
 import ReplyModal from "./ReplyModal";
 import EditModal from "./EditModal";
 
@@ -21,6 +22,7 @@ function Thread(props) {
   const [categories, setCategories] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState(undefined);
+  const [isFollowing, setIsFollowing] = useState(false);
   const { threadID } = useParams();
   const [cookies, setCookie] = useCookies([]);
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
@@ -36,7 +38,7 @@ function Thread(props) {
               setThread(responseBodyObject);
             });
           } else {
-            toast.error("Failed to fetch the thread");
+            toast.error("Failed to fetch the thread.");
           }
         })
         .catch((e) => toast.error("Failed to fetch the thread."));
@@ -53,14 +55,30 @@ function Thread(props) {
               props.onCategoryLoad(responseBodyObject);
             });
           } else {
-            toast.error("Failed to load the categories");
+            toast.error("Failed to load the categories.");
           }
         })
-        .catch((e) => toast.error("Failed to load the categories"));
+        .catch((e) => toast.error("Failed to load the categories."));
     } else {
       setCategories(props.categories);
     }
   }, []);
+
+  useEffect(() => {
+    if (props.userID === undefined || props.userID === "") return;
+    getFollow(props.userID, threadID)
+      .then((r) => {
+        if (r.status === 200) {
+          r.text().then((responseBody) => {
+            let responseBodyObject = JSON.parse(responseBody);
+            if (responseBodyObject.id !== undefined) setIsFollowing(true);
+          });
+        } else {
+          toast.error("Failed to get follow status.");
+        }
+      })
+      .catch((e) => toast.error("Failed to get follow status."));
+  }, [props.userID]);
 
   useEffect(() => {
     if (
@@ -135,6 +153,32 @@ function Thread(props) {
     );
   }
 
+  function handleFollow() {
+    follow(props.token, props.userID, threadID)
+      .then((r) => {
+        if (r.status === 200) {
+          toast.success("Followed!");
+          setIsFollowing(true);
+        } else {
+          toast.error("Failed to follow, try again.");
+        }
+      })
+      .catch((e) => toast.error("Failed to follow, try again."));
+  }
+
+  function handleUnfollow() {
+    unfollow(props.token, props.userID, threadID)
+      .then((r) => {
+        if (r.status === 200) {
+          toast.success("Unfollowed.");
+          setIsFollowing(false);
+        } else {
+          toast.error("Failed to unfollow, try again.");
+        }
+      })
+      .catch((e) => toast.error("Failed to unfollow, try again."));
+  }
+
   return (
     <>
       {thread === undefined || category === undefined ? (
@@ -167,11 +211,37 @@ function Thread(props) {
                 <>
                   <br></br>
                   <br></br>
-                  <div style={{ float: "right" }}>
+                  <div style={{ float: "right", width: "100%" }}>
                     <ReplyModal
                       threadID={threadID}
                       postReplyCallback={postReplyCallback}
                     />
+                    {!isFollowing && (
+                      <Button
+                        onClick={handleFollow}
+                        variant="outline-primary"
+                        style={{
+                          width: "100%",
+                          whiteSpace: "nowrap",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <i className="fa fa-star"></i> Follow
+                      </Button>
+                    )}
+                    {isFollowing && (
+                      <Button
+                        onClick={handleUnfollow}
+                        variant="outline-primary"
+                        style={{
+                          width: "100%",
+                          whiteSpace: "nowrap",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <i className="fa fa-minus-circle"></i> Unfollow
+                      </Button>
+                    )}
                   </div>
                 </>
               )}
@@ -181,10 +251,38 @@ function Thread(props) {
           <Row>
             <Col xs="2">
               {!isMobile && isLoggedIn && (
-                <ReplyModal
-                  threadID={threadID}
-                  postReplyCallback={postReplyCallback}
-                />
+                <>
+                  <ReplyModal
+                    threadID={threadID}
+                    postReplyCallback={postReplyCallback}
+                  />
+                  {!isFollowing && (
+                    <Button
+                      onClick={handleFollow}
+                      variant="outline-primary"
+                      style={{
+                        width: "100%",
+                        whiteSpace: "nowrap",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <i className="fa fa-star"></i> Follow
+                    </Button>
+                  )}
+                  {isFollowing && (
+                    <Button
+                      onClick={handleUnfollow}
+                      variant="outline-primary"
+                      style={{
+                        width: "100%",
+                        whiteSpace: "nowrap",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <i className="fa fa-minus-circle"></i> Unfollow
+                    </Button>
+                  )}
+                </>
               )}
             </Col>
             <Col lg="10">

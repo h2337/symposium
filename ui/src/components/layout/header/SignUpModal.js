@@ -142,7 +142,7 @@ function SignUpModal(props) {
                 type="password"
                 placeholder="Password again"
                 name="passwordRepeat"
-                onChange={handleChange}
+                onChange={handleChange} // TODO: Check password equivalence here
                 //onKeyDown={handleKeyDown}
               />
             </Form.Group>

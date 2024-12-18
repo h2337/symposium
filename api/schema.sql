@@ -43,6 +43,16 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+CREATE TABLE follows (
+    id serial NOT NULL,
+    user_id integer NOT NULL,
+    thread_id integer NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (thread_id) REFERENCES threads (id),
+    UNIQUE (user_id, thread_id)
+);
+
 INSERT INTO settings (name, value) VALUES ('siteName', 'Symposium');
 INSERT INTO settings (name, value) VALUES ('isInitialized', 'false');
 

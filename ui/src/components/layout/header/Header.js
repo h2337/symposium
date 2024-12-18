@@ -28,10 +28,10 @@ function Header(props) {
               props.onStartTouring();
           });
         } else {
-          toast.error("Failed to load the settings");
+          toast.error("Failed to load the settings.");
         }
       })
-      .catch((e) => toast.error("Failed to load the settings"));
+      .catch((e) => toast.error("Failed to load the settings."));
   }, []);
 
   useEffect(() => {

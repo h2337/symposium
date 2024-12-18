@@ -24,10 +24,10 @@ function Categories(props) {
             props.onCategoryLoad(responseBodyObject);
           });
         } else {
-          toast.error("Failed to load the categories");
+          toast.error("Failed to load the categories.");
         }
       })
-      .catch((e) => toast.error("Failed to load the categories"));
+      .catch((e) => toast.error("Failed to load the categories."));
   }
 
   return (

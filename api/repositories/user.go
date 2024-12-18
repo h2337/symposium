@@ -7,7 +7,7 @@ import (
 )
 
 func GetUser(id uint32) (*models.User, error) {
-	sql := "SELECT id, username, email, password, access FROM users where id = $1"
+	sql := "SELECT id, username, email, password, access FROM users WHERE id = $1"
 	row := database.Database.QueryRow(sql, id)
 	var user models.User
 	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Access)
@@ -19,7 +19,7 @@ func GetUser(id uint32) (*models.User, error) {
 }
 
 func GetUserByUsername(username string) (*models.User, error) {
-	sql := "SELECT id, username, email, password, access FROM users where username = $1"
+	sql := "SELECT id, username, email, password, access FROM users WHERE username = $1"
 	row := database.Database.QueryRow(sql, username)
 	var user models.User
 	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Access)

@@ -44,7 +44,7 @@ function Profile(props) {
             setUser(responseBodyObject);
           });
         } else {
-          toast.error("Failed to fetch the user");
+          toast.error("Failed to fetch the user.");
         }
       })
       .catch((e) => toast.error("Failed to fetch the user."));

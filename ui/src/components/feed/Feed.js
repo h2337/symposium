@@ -97,10 +97,10 @@ function Feed(props) {
               resolve("Categories loaded");
             });
           } else {
-            toast.error("Failed to load the categories");
+            toast.error("Failed to load the categories.");
           }
         })
-        .catch((e) => toast.error("Failed to load the categories"));
+        .catch((e) => toast.error("Failed to load the categories."));
     });
   }
 

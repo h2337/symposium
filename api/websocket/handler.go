@@ -21,7 +21,7 @@ func HandleWebsocket(w http.ResponseWriter, r *http.Request) {
 	defer connection.Close()
 	uuid := uuid.New()
 	threadChannel := make(chan *models.Thread)
-	connectionThreadChannels[uuid.String()] = threadChannel
+	connectionThreadChannels[uuid.String()] = threadChannel // TODO: Remove channel when connection is closed
 	for {
 		thread := <-threadChannel
 		jsonThread, err := json.Marshal(thread)

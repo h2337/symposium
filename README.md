@@ -10,6 +10,8 @@ Write down PostgreSQL details, JWT signing secret, and port to `./api/config.jso
 Write API URL to `build.sh` "export API_URL=" line.
 
 Run `build.sh` and then run `./build/api`.
+
+To create an admin account, sign up through the site and then set "access" column of user to 99.
 #### Features
 - [x] User login/register
 - [x] Basic thread/post functionality

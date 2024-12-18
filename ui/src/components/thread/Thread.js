@@ -18,6 +18,7 @@ function Thread(props) {
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const [thread, setThread] = useState(undefined);
   const [categories, setCategories] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState(undefined);
   const [cookies, setCookie] = useCookies([]);
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
@@ -57,21 +58,34 @@ function Thread(props) {
     } else {
       setCategories(props.categories);
     }
-    if (
-      cookies.token !== undefined &&
-      cookies.token.length > 0 &&
-      cookies.username !== undefined &&
-      cookies.username.length > 0
-    ) {
-      props.onLogin(
-        cookies.username,
-        cookies.userID,
-        cookies.email,
-        cookies.access,
-        cookies.token
-      );
-    }
   }, []);
+
+  useEffect(() => {
+    if (
+      props.token !== undefined &&
+      props.token.length > 0 &&
+      props.username !== undefined &&
+      props.username.length > 0
+    ) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+      if (
+        cookies.token !== undefined &&
+        cookies.token.length > 0 &&
+        cookies.username !== undefined &&
+        cookies.username.length > 0
+      ) {
+        props.onLogin(
+          cookies.username,
+          cookies.userID,
+          cookies.email,
+          cookies.access,
+          cookies.token
+        );
+      }
+    }
+  }, [props.token]);
 
   useEffect(() => {
     if (
@@ -122,26 +136,34 @@ function Thread(props) {
       ) : (
         <Container>
           <Row>
-            <Col>
-              <Badge variant="light">
-                <i
-                  className="fa fa-circle"
-                  style={{ color: "#" + category.color, fontSize: 10 }}
-                ></i>{" "}
-                <span>{category.name}</span>
-              </Badge>
-              <h3>{thread.title}</h3>
-              {isMobile && (
-                <Reply
-                  threadID={threadID}
-                  postReplyCallback={postReplyCallback}
-                />
+            <Col xs="1"></Col>
+            <Col xs="11">
+              <Badge style={{ backgroundColor: "#" + category.color }}>
+                <span style={{ color: "white" }}>{category.name}</span>
+              </Badge>{" "}
+              <span
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1.2em",
+                }}
+              >
+                {thread.title}
+              </span>
+              {isMobile && isLoggedIn && (
+                <>
+                  <br></br>
+                  <br></br>
+                  <Reply
+                    threadID={threadID}
+                    postReplyCallback={postReplyCallback}
+                  />
+                </>
               )}
             </Col>
           </Row>
           <br></br>
           <Row>
-            {!isMobile && (
+            {!isMobile && isLoggedIn && (
               <Col xs="1">
                 <Reply
                   threadID={threadID}
@@ -162,7 +184,7 @@ function Thread(props) {
                   <>
                     <Container>
                       <Row>
-                        <Col xs="1">
+                        <Col md="1">
                           <Link to={"/profile/" + v.userID}>
                             <img
                               src={
@@ -178,7 +200,7 @@ function Thread(props) {
                             />
                           </Link>
                         </Col>
-                        <Col xs="11">
+                        <Col md="11">
                           <div
                             style={{
                               fontSize: "0.8em",
@@ -198,16 +220,16 @@ function Thread(props) {
                               __html: DOMPurify.sanitize(v.content),
                             }}
                           ></div>
-                          <div
+                          <span
                             style={{
                               float: "right",
-                              fontSize: "0.8em",
-                              fontStyle: "italic",
+                              fontSize: "0.7em",
                               color: "grey",
+                              fontWeight: "bolder",
                             }}
                           >
                             {formatDate(v.createdAt)}
-                          </div>
+                          </span>
                         </Col>
                       </Row>
                     </Container>
@@ -225,6 +247,8 @@ function Thread(props) {
 
 function mapStateToProps(state) {
   return {
+    token: state.user.token,
+    username: state.user.username,
     thread: state.thread.currentThread,
     categories: state.category.categories,
   };

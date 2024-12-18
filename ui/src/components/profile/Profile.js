@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { useParams, Link, useHistory } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { createUseStyles } from "react-jss";
 import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
 import DOMPurify from "dompurify";
@@ -13,6 +14,7 @@ import { getPostsByUserID } from "../../api/post";
 function Profile(props) {
   const [cookies, setCookie] = useCookies([]);
   const [posts, setPosts] = useState([]);
+  const [profileColor, setProfileColor] = useState("");
   const [user, setUser] = useState(undefined);
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const history = useHistory();
@@ -80,6 +82,24 @@ function Profile(props) {
     return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
   }
 
+  const classes = createUseStyles({
+    changeAvatarButton: {
+      width: "45px",
+      height: "20px",
+      borderRadius: "5px",
+      top: "50%",
+      left: "50%",
+      transform: "translate(60%, -100%)",
+      color: "white",
+      fontSize: "0.8em",
+      cursor: "pointer",
+      backgroundColor: "rgba(200, 200, 200, 0.5)",
+      "&:hover": {
+        backgroundColor: "rgba(200, 200, 200, 1)",
+      },
+    },
+  })();
+
   return (
     <Container>
       <br></br>
@@ -94,22 +114,7 @@ function Profile(props) {
             style={{ borderRadius: "50%" }}
           />
           {props.userID === userID && (
-            <div
-              variant="outline-primary"
-              style={{
-                width: "45px",
-                height: "20px",
-                borderRadius: "5px",
-                top: "50%",
-                left: "50%",
-                transform: "translate(60%, -100%)",
-                color: "white",
-                fontSize: "0.8em",
-                backgroundColor: "rgba(200, 200, 200, 0.5)",
-              }}
-            >
-              Change
-            </div>
+            <div className={classes.changeAvatarButton}>Change</div>
           )}
         </div>
         <div style={{ paddingTop: "50px", paddingLeft: "50px" }}>
@@ -142,7 +147,7 @@ function Profile(props) {
                   </Link>
                 </Row>
                 <Row>
-                  <Col xs="1">
+                  <Col md="1">
                     <Link to={"/profile/" + v.userID}>
                       <img
                         src={
@@ -158,7 +163,7 @@ function Profile(props) {
                       />
                     </Link>
                   </Col>
-                  <Col xs="11">
+                  <Col md="11">
                     <div
                       style={{
                         fontSize: "0.8em",
@@ -178,16 +183,16 @@ function Profile(props) {
                         __html: DOMPurify.sanitize(v.content),
                       }}
                     ></div>
-                    <div
+                    <span
                       style={{
                         float: "right",
-                        fontSize: "0.8em",
-                        fontStyle: "italic",
+                        fontSize: "0.7em",
+                        fontWeight: "bolder",
                         color: "grey",
                       }}
                     >
                       {formatDate(v.createdAt)}
-                    </div>
+                    </span>
                   </Col>
                 </Row>
               </Container>

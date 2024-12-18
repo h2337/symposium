@@ -260,7 +260,6 @@ function Feed(props) {
                         </div>
                         <div className="ml-auto">
                           <Badge
-                            variant="light"
                             style={{
                               backgroundColor:
                                 "#" +

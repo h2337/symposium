@@ -6,8 +6,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/jafarlihi/symposium/api/config"
+	"github.com/jafarlihi/symposium/api/logger"
 	"github.com/jafarlihi/symposium/api/models"
 	"github.com/jafarlihi/symposium/api/repositories"
+	"github.com/jafarlihi/symposium/api/websocket"
 	"io"
 	"net/http"
 	"strconv"
@@ -132,6 +134,12 @@ func CreateThread(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to create the initial post"}`)
 		return
+	}
+	thread, err := repositories.GetThread(uint32(threadID))
+	if err != nil {
+		logger.Log.Error("Failed to SELECT newly-created thread for emitting through WebSocket, error: " + err.Error())
+	} else {
+		websocket.ThreadChannel <- thread
 	}
 	w.WriteHeader(http.StatusOK)
 }

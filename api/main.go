@@ -7,6 +7,7 @@ import (
 	"github.com/jafarlihi/symposium/api/database"
 	"github.com/jafarlihi/symposium/api/handlers"
 	"github.com/jafarlihi/symposium/api/logger"
+	"github.com/jafarlihi/symposium/api/websocket"
 	"net/http"
 )
 
@@ -14,6 +15,7 @@ func main() {
 	logger.InitLogger()
 	config.InitConfig()
 	database.InitDatabase()
+	websocket.InitChannels()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/token", handlers.CreateTokenHandler).Methods("POST")
@@ -27,7 +29,7 @@ func main() {
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
 	router.HandleFunc("/user", handlers.CreateUserHandler).Methods("POST")
 	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
-	router.HandleFunc("/ws", handlers.HandleWebsocket)
+	router.HandleFunc("/ws/thread", websocket.HandleWebsocket)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
 	origins := gorillaHandlers.AllowedOrigins([]string{"*"})

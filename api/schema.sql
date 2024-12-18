@@ -43,5 +43,5 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-INSERT INTO settings (name, value) VALUES ('site_name', 'Symposium');
+INSERT INTO settings (name, value) VALUES ('siteName', 'Symposium');
 

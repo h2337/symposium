@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory, Link } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import { LOGOUT } from "../../../redux/actionTypes";
+import { getSettings } from "../../../api/setting";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
 
 function Header(props) {
+  const [siteName, setSiteName] = useState([]);
   const history = useHistory();
   const [cookies, setCookie, removeCookie] = useCookies([]);
+
+  useEffect(() => {
+    getSettings()
+      .then((r) => {
+        if (r.status === 200) {
+          r.text().then((responseBody) => {
+            let responseBodyObject = JSON.parse(responseBody);
+            setSiteName(responseBodyObject.siteName);
+            document.title = responseBodyObject.siteName;
+          });
+        } else {
+          toast.error("Failed to load the settings");
+        }
+      })
+      .catch((e) => toast.error("Failed to load the settings"));
+  }, []);
 
   function handleLogout() {
     removeCookie("username", { path: "/" });
@@ -35,7 +53,7 @@ function Header(props) {
     <>
       <Navbar bg="light">
         <Navbar.Brand>
-          <Link to="/">Symposium</Link>
+          <Link to="/">{siteName}</Link>
         </Navbar.Brand>
         <Nav className="justify-content-end" style={{ width: "100%" }}>
           {props.username.length > 0 && props.token.length > 0 ? (

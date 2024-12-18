@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { createAccount } from "../api/account";
+import { createAccount } from "../../../api/account";
 
 function SignUp() {
   const [show, setShow] = useState(false);

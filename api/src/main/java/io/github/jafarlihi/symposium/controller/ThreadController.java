@@ -61,14 +61,15 @@ public class ThreadController {
     }
 
     @GetMapping
-    public ResponseEntity getThreads(@RequestBody String request) {
-        JSONObject requestObject = new JSONObject(request);
-        Integer page = JSONUtil.getIntegerFromJSONObject(requestObject, "page");
-        Integer pageSize = JSONUtil.getIntegerFromJSONObject(requestObject, "pageSize");
+    public ResponseEntity getThreads(@RequestParam(required = false) Integer categoryId, @RequestParam Integer page, @RequestParam Integer pageSize) {
         JSONObject response = new JSONObject();
         if (page == null || pageSize == null)
             return new ResponseEntity<>(response.put("error", "Page and/or pageSize is missing").toString(), HttpStatus.BAD_REQUEST);
-        List<Thread> threads = threadService.getThreads(page, pageSize);
+        List<Thread> threads = null;
+        if (categoryId == null)
+            threads = threadService.getThreads(page, pageSize);
+        else
+            threads = threadService.getThreadsByCategoryId(categoryId, page, pageSize);
         return new ResponseEntity<>(response.put("threads", threads).toString(), HttpStatus.OK);
     }
 }

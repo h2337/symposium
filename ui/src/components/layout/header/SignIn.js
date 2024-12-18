@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import { createToken } from "../api/token";
+import { createToken } from "../../../api/token";
 import { toast } from "react-toastify";
 import { connect } from "react-redux";
-import { LOGIN } from "../redux/actionTypes";
+import { LOGIN } from "../../../redux/actionTypes";
 
 function SignInModal(props) {
   const [show, setShow] = useState(false);
@@ -19,13 +19,13 @@ function SignInModal(props) {
         if (r.status === 200) {
           handleClose();
           toast.success("Successfully logged in!");
-          r.text().then((response) => {
-            let responseObject = JSON.parse(response);
+          r.text().then((responseBody) => {
+            let responseBodyObject = JSON.parse(responseBody);
             props.onLogin(
               username,
-              responseObject.email,
-              responseObject.access,
-              responseObject.token
+              responseBodyObject.email,
+              responseBodyObject.access,
+              responseBodyObject.token
             );
           });
         } else {

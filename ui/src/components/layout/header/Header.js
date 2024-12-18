@@ -4,14 +4,15 @@ import { connect } from "react-redux";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 import { toast } from "react-toastify";
-import { LOGOUT } from "../redux/actionTypes";
-import { useHistory } from "react-router-dom";
+import { LOGOUT } from "../../../redux/actionTypes";
+import { useHistory, Link } from "react-router-dom";
 
 function Header(props) {
   const history = useHistory();
 
   function handleLogout() {
     props.onLogout();
+    history.push("/");
     toast.success("Logged out.");
   }
 
@@ -25,7 +26,7 @@ function Header(props) {
       userButtons = (
         <>
           <Button variant="primary" onClick={handleAdminPanelClick}>
-            Admin panel
+            Admin
           </Button>
           &nbsp;
           <Button variant="primary" onClick={handleLogout}>
@@ -52,7 +53,9 @@ function Header(props) {
   return (
     <>
       <Navbar bg="light">
-        <Navbar.Brand>Forum</Navbar.Brand>
+        <Navbar.Brand>
+          <Link to="/">Symposium</Link>
+        </Navbar.Brand>
         <Nav className="justify-content-end" style={{ width: "100%" }}>
           {userButtons}
         </Nav>

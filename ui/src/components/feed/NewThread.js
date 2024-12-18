@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import { connect } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -56,4 +55,4 @@ function NewThread(props) {
   );
 }
 
-export default connect(null)(NewThread);
+export default NewThread;

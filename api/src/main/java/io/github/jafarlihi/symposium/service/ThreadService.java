@@ -18,8 +18,13 @@ public class ThreadService {
     private ThreadRepository threadRepository;
 
     public List<Thread> getThreads(Integer page, Integer pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt"));
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         return threadRepository.findAll(pageable).toList();
+    }
+
+    public List<Thread> getThreadsByCategoryId(Integer categoryId, Integer page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
+        return threadRepository.findByCategoryId(categoryId.longValue(), pageable).toList();
     }
 
     public Thread createThread(Long userId, String title, Long categoryId) {

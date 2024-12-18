@@ -29,7 +29,11 @@ function ReplyModal(props) {
 
   return (
     <>
-      <Button variant="outline-primary" onClick={handleShow}>
+      <Button
+        variant="outline-primary"
+        onClick={handleShow}
+        style={{ width: "100%", whiteSpace: "nowrap" }}
+      >
         <i className="fa fa-reply"></i> Reply
       </Button>
 

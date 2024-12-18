@@ -155,6 +155,18 @@ function Feed(props) {
                 </>
               )}
               <br></br>
+              <Badge variant={categoryID === undefined ? "primary" : "light"}>
+                <Link
+                  to={"/"}
+                  style={{ color: "black", textDecoration: "none" }}
+                >
+                  <i
+                    className="fa fa-circle"
+                    style={{ color: "#000000", fontSize: 10 }}
+                  ></i>{" "}
+                  <span>All Categories</span>
+                </Link>
+              </Badge>
               {categories.map((v, i) => (
                 <div key={i}>
                   <Badge variant={v.id == categoryID ? "primary" : "light"}>
@@ -184,6 +196,17 @@ function Feed(props) {
                     display: "inline-block",
                   }}
                 >
+                  <Dropdown.Item onClick={() => history.push("/")}>
+                    <Badge
+                      variant={categoryID === undefined ? "primary" : "light"}
+                    >
+                      <i
+                        className="fa fa-circle"
+                        style={{ color: "#000000", fontSize: 10 }}
+                      ></i>{" "}
+                      <span>All Categories</span>
+                    </Badge>
+                  </Dropdown.Item>
                   {categories.map((v, i) => (
                     <Dropdown.Item
                       key={i}

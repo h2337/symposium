@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Dropdown } from "react-bootstrap";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -10,6 +10,10 @@ function NewThread(props) {
 
   function handleChange(event) {
     setTitle(event.target.value);
+  }
+
+  function handleSubmit() {
+    console.log(props.categories);
   }
 
   const handleClose = () => setShow(false);
@@ -35,6 +39,23 @@ function NewThread(props) {
                 onChange={handleChange}
               />
             </Form.Group>
+            <Form.Group>
+              <Dropdown>
+                <Dropdown.Toggle variant="primary">Category</Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  {props.categories.map((category, i) => (
+                    <Dropdown.Item key={i}>
+                      <i
+                        className="fa fa-circle fa-xs"
+                        style={{ color: "#" + category.color, fontSize: 10 }}
+                      ></i>{" "}
+                      {category.name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Form.Group>
           </Form>
           <ReactQuill
             theme="snow"
@@ -46,7 +67,7 @@ function NewThread(props) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleSubmit}>
             Create
           </Button>
         </Modal.Footer>

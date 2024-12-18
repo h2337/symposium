@@ -95,7 +95,7 @@ function Feed(props) {
             {isLoggedIn && (
               <>
                 <br></br>
-                <NewThread></NewThread>
+                <NewThread categories={props.categories}></NewThread>
                 <br></br>
               </>
             )}

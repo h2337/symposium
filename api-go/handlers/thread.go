@@ -31,13 +31,45 @@ func GetThread(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to marshal the result to JSON"}`)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, string(jsonResult))
 }
 
 func GetThreads(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("getthreads")
+	queryParams := r.URL.Query()
+	if queryParams["page"][0] == "" || queryParams["pageSize"][0] == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "page and/or pageSize query parameters are missing"}`)
+		return
+	}
+	page, err := strconv.ParseUint(queryParams["page"][0], 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "page query parameter couldn't be parsed as an integer"}`)
+		return
+	}
+	pageSize, err := strconv.ParseUint(queryParams["pageSize"][0], 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "pageSize query parameter couldn't be parsed as an integer"}`)
+		return
+	}
+	threads, err := repositories.GetThreads(uint32(page), uint32(pageSize))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to get the threads"}`)
+		return
+	}
+	jsonResult, err := json.Marshal(threads)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to marshal the result to JSON"}`)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, string(jsonResult))
 }
 
 type threadCreationRequest struct {

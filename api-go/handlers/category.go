@@ -21,6 +21,7 @@ func GetCategories(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to marshal the result to JSON"}`)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, string(jsonResult))

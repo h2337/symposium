@@ -6,7 +6,7 @@ import (
 	"github.com/jafarlihi/symposium/backend/models"
 )
 
-func GetCategories() ([]models.Category, error) {
+func GetCategories() ([]*models.Category, error) {
 	sql := "SELECT id, name, color, icon FROM categories"
 	rows, err := database.Database.Query(sql)
 	if err != nil {
@@ -14,9 +14,9 @@ func GetCategories() ([]models.Category, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	categories := make([]models.Category, 0)
+	categories := make([]*models.Category, 0)
 	for rows.Next() {
-		var category models.Category
+		category := &models.Category{}
 		if err := rows.Scan(&category.ID, &category.Name, &category.Color, &category.Icon); err != nil {
 			logger.Log.Error("Failed to scan SELECTed row of categories, error: " + err.Error())
 			return nil, err

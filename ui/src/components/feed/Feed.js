@@ -181,7 +181,7 @@ function Feed(props) {
                 {isLoggedIn && (
                   <>
                     <br></br>
-                    <NewThread categories={categories}></NewThread>
+                    <NewThreadModal categories={categories}></NewThreadModal>
                     <br></br>
                   </>
                 )}

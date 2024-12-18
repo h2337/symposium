@@ -4,7 +4,12 @@ import { useHistory } from "react-router-dom";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
-import { LOGIN } from "../../../redux/actionTypes";
+import {
+  LOGIN,
+  CLOSE_TOUR,
+  OPEN_TOUR,
+  TOUR_CHANGE_STEP,
+} from "../../../redux/actionTypes";
 import { createToken } from "../../../api/token";
 
 function SignInModal(props) {
@@ -15,7 +20,10 @@ function SignInModal(props) {
   const history = useHistory();
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    props.onCloseTour();
+    setShow(true);
+  };
 
   function handleLogin() {
     createToken(username, password)
@@ -44,6 +52,8 @@ function SignInModal(props) {
         }
       })
       .catch((e) => toast.error("Login failed, try again."));
+    props.onTourChangeStep(2);
+    props.onOpenTour();
   }
 
   function handleChange(event) {
@@ -62,7 +72,7 @@ function SignInModal(props) {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={handleShow} id="sign-in-button">
         <i className="fa fa-sign-in"></i> Sign in
       </Button>
 
@@ -110,6 +120,9 @@ function SignInModal(props) {
 const mapDispatchToProps = (dispatch) => ({
   onLogin: (username, id, email, access, token) =>
     dispatch({ type: LOGIN, username, id, email, access, token }),
+  onCloseTour: () => dispatch({ type: CLOSE_TOUR }),
+  onTourChangeStep: (step) => dispatch({ type: TOUR_CHANGE_STEP, step }),
+  onOpenTour: () => dispatch({ type: OPEN_TOUR }),
 });
 
 export default connect(null, mapDispatchToProps)(SignInModal);

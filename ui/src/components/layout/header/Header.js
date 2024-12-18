@@ -4,13 +4,15 @@ import { useHistory, Link } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
-import { LOGOUT } from "../../../redux/actionTypes";
+import Tour from "reactour";
+import { LOGOUT, START_TOURING } from "../../../redux/actionTypes";
 import { getSettings } from "../../../api/setting";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
 
 function Header(props) {
   const [siteName, setSiteName] = useState("");
+  const [isTourOpen, setIsTourOpen] = useState(false);
   const history = useHistory();
   const [cookies, setCookie, removeCookie] = useCookies([]);
 
@@ -22,6 +24,8 @@ function Header(props) {
             let responseBodyObject = JSON.parse(responseBody);
             setSiteName(responseBodyObject.siteName);
             document.title = responseBodyObject.siteName;
+            if (responseBodyObject.isInitialized === "false")
+              props.onStartTouring();
           });
         } else {
           toast.error("Failed to load the settings");
@@ -29,6 +33,31 @@ function Header(props) {
       })
       .catch((e) => toast.error("Failed to load the settings"));
   }, []);
+
+  useEffect(() => {
+    if (props.isTouring) setIsTourOpen(props.isTourOpen);
+  }, [props.isTourOpen]);
+
+  function closeTour() {
+    setIsTourOpen(false);
+  }
+
+  const tourSteps = [
+    {
+      selector: "#sign-up-button",
+      content:
+        "Let's get started by setting up your forums! First, you should sign up your admin account.",
+    },
+    {
+      selector: "#sign-in-button",
+      content: "Sign in to your newly registered admin account.",
+    },
+    {
+      selector: "#user-bar",
+      content:
+        "Navigate to the admin panel through your user bar and customize the settings, also create few categories so threads can be created!",
+    },
+  ];
 
   function handleLogout() {
     removeCookie("username", { path: "/" });
@@ -51,13 +80,19 @@ function Header(props) {
 
   return (
     <>
+      <Tour
+        steps={tourSteps}
+        isOpen={isTourOpen}
+        onRequestClose={closeTour}
+        startAt={props.step}
+      />
       <Navbar bg="light">
         <Navbar.Brand>
           <Link to="/">{siteName}</Link>
         </Navbar.Brand>
         <Nav className="justify-content-end" style={{ width: "100%" }}>
           {props.username.length > 0 && props.token.length > 0 ? (
-            <Dropdown drop="left">
+            <Dropdown drop="left" id="user-bar">
               <Dropdown.Toggle variant="primary">
                 <img
                   src={
@@ -104,11 +139,15 @@ function mapStateToProps(state) {
     username: state.user.username,
     token: state.user.token,
     access: state.user.access,
+    isTouring: state.tour.isTouring,
+    isTourOpen: state.tour.isTourOpen,
+    step: state.tour.step,
   };
 }
 
 const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch({ type: LOGOUT }),
+  onStartTouring: () => dispatch({ type: START_TOURING }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

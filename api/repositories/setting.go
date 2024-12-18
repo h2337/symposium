@@ -6,7 +6,7 @@ import (
 	"github.com/jafarlihi/symposium/api/models"
 )
 
-func GetSettings() ([]*models.Setting, error) {
+func GetSettings() (map[string]string, error) {
 	sql := "SELECT name, value FROM settings"
 	rows, err := database.Database.Query(sql)
 	if err != nil {
@@ -23,7 +23,12 @@ func GetSettings() ([]*models.Setting, error) {
 		}
 		settings = append(settings, setting)
 	}
-	return settings, nil
+	var settingsMap map[string]string
+	settingsMap = make(map[string]string)
+	for _, setting := range settings {
+		settingsMap[setting.Name] = setting.Value
+	}
+	return settingsMap, nil
 }
 
 func UpdateSettings(settings map[string]string) error {

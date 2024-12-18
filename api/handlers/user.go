@@ -69,7 +69,27 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Failed to hash the password"}`)
 		return
 	}
-	id, err := repositories.CreateUser(acr.Username, acr.Email, string(passwordHash))
+	settings, err := repositories.GetSettings()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to fetch the settings"}`)
+		return
+	}
+	var id int64
+	if settings["isInitialized"] == "true" {
+		id, err = repositories.CreateUser(acr.Username, acr.Email, string(passwordHash), 0)
+	} else {
+		id, err = repositories.CreateUser(acr.Username, acr.Email, string(passwordHash), 99)
+		if err == nil {
+			settings["isInitialized"] = "true"
+			err = repositories.UpdateSettings(settings)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				io.WriteString(w, `{"error": "Failed to update the settings"}`)
+				return
+			}
+		}
+	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to create the user"}`)

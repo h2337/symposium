@@ -30,10 +30,10 @@ func GetUserByUsername(username string) (*models.User, error) {
 	return &user, nil
 }
 
-func CreateUser(username string, email string, password string) (int64, error) {
-	sql := "INSERT INTO users (username, email, password, access) VALUES ($1, $2, $3, 0) RETURNING id"
+func CreateUser(username string, email string, password string, access int) (int64, error) {
+	sql := "INSERT INTO users (username, email, password, access) VALUES ($1, $2, $3, $4) RETURNING id"
 	var id int64
-	err := database.Database.QueryRow(sql, username, email, password).Scan(&id)
+	err := database.Database.QueryRow(sql, username, email, password, access).Scan(&id)
 	if err != nil {
 		logger.Log.Error("Failed to INSERT a new user, error: " + err.Error())
 		return 0, err

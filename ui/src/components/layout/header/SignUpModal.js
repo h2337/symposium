@@ -1,9 +1,15 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import {
+  CLOSE_TOUR,
+  TOUR_CHANGE_STEP,
+  OPEN_TOUR,
+} from "../../../redux/actionTypes";
 import { createUser } from "../../../api/user";
 
-function SignUpModal() {
+function SignUpModal(props) {
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -11,7 +17,10 @@ function SignUpModal() {
   const [passwordRepeat, setPasswordRepeat] = useState("");
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    props.onCloseTour();
+    setShow(true);
+  };
 
   function handleSignUp() {
     if (
@@ -41,6 +50,8 @@ function SignUpModal() {
         }
       })
       .catch((e) => toast.error("Registration failed, try again."));
+    props.onTourChangeStep(1);
+    props.onOpenTour();
   }
 
   function handleChange(event) {
@@ -63,7 +74,7 @@ function SignUpModal() {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={handleShow} id="sign-up-button">
         <i className="fa fa-user-plus"></i> Sign up
       </Button>
 
@@ -128,4 +139,10 @@ function SignUpModal() {
   );
 }
 
-export default SignUpModal;
+const mapDispatchToProps = (dispatch) => ({
+  onCloseTour: () => dispatch({ type: CLOSE_TOUR }),
+  onTourChangeStep: (step) => dispatch({ type: TOUR_CHANGE_STEP, step }),
+  onOpenTour: () => dispatch({ type: OPEN_TOUR }),
+});
+
+export default connect(null, mapDispatchToProps)(SignUpModal);

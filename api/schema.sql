@@ -44,4 +44,5 @@ CREATE TABLE posts (
 );
 
 INSERT INTO settings (name, value) VALUES ('siteName', 'Symposium');
+INSERT INTO settings (name, value) VALUES ('isInitialized', 'false');
 

@@ -30,10 +30,6 @@ function Feed(props) {
   useEffect(() => {
     resetFeed();
     initialLoad();
-  }, []);
-
-  useEffect(() => {
-    resetFeed();
   }, [categoryId]);
 
   let isLoggedIn = false; // TODO: Does this belong here?
@@ -88,7 +84,10 @@ function Feed(props) {
             let responseBodyObject = JSON.parse(responseBody);
             if (responseBodyObject.threads.length === 0)
               setHasMoreThreads(false);
-            setThreads(threads.concat(responseBodyObject.threads));
+            setThreads((threads) => [
+              ...threads,
+              ...responseBodyObject.threads,
+            ]);
           });
         } else {
           toast.error("Failed to fetch threads");
@@ -97,6 +96,7 @@ function Feed(props) {
       .catch((e) => toast.error("Failed to fetch threads."));
   }
 
+  // TODO: Make mobile category dropdown Link not href
   return (
     <>
       <Container fluid>
@@ -160,6 +160,7 @@ function Feed(props) {
                 <DropdownButton title="Categories">
                   {categories.map((v, i) => (
                     <Dropdown.Item key={i} href={"/category/" + v.id}>
+                      {" "}
                       <Badge variant={v.id == categoryId ? "primary" : "light"}>
                         <i
                           className="fa fa-circle"

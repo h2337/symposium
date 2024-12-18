@@ -18,7 +18,7 @@ import { useCookies } from "react-cookie";
 import queryString from "query-string";
 import { getCategories } from "../../api/category";
 import { getThreads } from "../../api/thread";
-import NewThread from "./NewThread";
+import NewThreadModal from "./NewThreadModal";
 
 function Feed(props) {
   const [threads, setThreads] = useState([]);
@@ -110,18 +110,6 @@ function Feed(props) {
     setHasMoreThreads(true);
   }
 
-  const classes = createUseStyles({
-    feedThreadBox: {
-      width: "100%",
-      cursor: "pointer",
-      transition: "0.3s",
-      borderRadius: "5px",
-      "&:hover": {
-        backgroundColor: "#f8f9fa",
-      },
-    },
-  })();
-
   function loadThreads() {
     getThreads(categoryID, Feed.threadPage++, 20)
       .then((r) => {
@@ -143,6 +131,18 @@ function Feed(props) {
     history.push("/thread/" + thread.id);
   }
 
+  const classes = createUseStyles({
+    feedThreadBox: {
+      width: "100%",
+      cursor: "pointer",
+      transition: "0.3s",
+      borderRadius: "5px",
+      "&:hover": {
+        backgroundColor: "#f8f9fa",
+      },
+    },
+  })();
+
   return (
     <>
       <Container>
@@ -152,7 +152,7 @@ function Feed(props) {
               {isLoggedIn && (
                 <>
                   <br></br>
-                  <NewThread categories={categories}></NewThread>
+                  <NewThreadModal categories={categories}></NewThreadModal>
                   <br></br>
                 </>
               )}

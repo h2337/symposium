@@ -10,6 +10,9 @@ function Reply(props) {
   const [show, setShow] = useState(false);
   const [editorValue, setEditorValue] = useState("");
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   function handleSubmit() {
     createPost(props.token, parseInt(props.threadID), editorValue)
       .then((r) => {
@@ -23,9 +26,6 @@ function Reply(props) {
       })
       .catch((e) => toast.error("Failed to create a new reply, try again."));
   }
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   return (
     <>

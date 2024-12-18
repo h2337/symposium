@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams, Link, useHistory } from "react-router-dom";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { createUseStyles } from "react-jss";
 import { useCookies } from "react-cookie";
@@ -18,8 +18,9 @@ function Profile(props) {
   const [profileColor, setProfileColor] = useState("");
   const [user, setUser] = useState(undefined);
   const [hasMorePosts, setHasMorePosts] = useState(true);
-  const history = useHistory();
   const { userID } = useParams();
+  const history = useHistory();
+
   useEffect(() => {
     if (
       cookies.token !== undefined &&
@@ -78,11 +79,6 @@ function Profile(props) {
     history.push("/thread/" + postAndThread.threadID);
   }
 
-  function formatDate(date) {
-    let d = new Date(date);
-    return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
-  }
-
   function handleAvatarUpload(avatar) {
     if (avatar.size > 1024000) {
       toast.error("Uploaded avatar image can't be more than 1MB.");
@@ -106,7 +102,6 @@ function Profile(props) {
 
   function handleChangeAvatarClick() {
     const $input = $('<input type="file" accept="image/png, image/jpeg">');
-
     $input
       .appendTo("body")
       .hide()
@@ -114,6 +109,11 @@ function Profile(props) {
       .on("input", (e) => {
         handleAvatarUpload($(e.target)[0].files[0]);
       });
+  }
+
+  function formatDate(date) {
+    let d = new Date(date);
+    return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
   }
 
   const classes = createUseStyles({

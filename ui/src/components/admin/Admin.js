@@ -7,6 +7,7 @@ import Categories from "./Categories";
 
 function Admin(props) {
   const [cookies, setCookie] = useCookies([]);
+
   useEffect(() => {
     if (
       cookies.token !== undefined &&

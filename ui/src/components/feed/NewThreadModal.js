@@ -6,11 +6,17 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { createThread } from "../../api/thread";
 
-function NewThread(props) {
+function NewThreadModal(props) {
   const [show, setShow] = useState(false);
   const [editorValue, setEditorValue] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setEditorValue("");
+    setShow(true);
+  };
 
   function handleChange(event) {
     if (event.target.name === "title") setTitle(event.target.value);
@@ -33,12 +39,6 @@ function NewThread(props) {
       })
       .catch((e) => toast.error("Failed to create a new thread, try again."));
   }
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => {
-    setEditorValue("");
-    setShow(true);
-  };
 
   return (
     <>
@@ -102,4 +102,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(NewThread);
+export default connect(mapStateToProps)(NewThreadModal);

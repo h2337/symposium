@@ -20,9 +20,10 @@ function Thread(props) {
   const [categories, setCategories] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState(undefined);
+  const { threadID } = useParams();
   const [cookies, setCookie] = useCookies([]);
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
-  const { threadID } = useParams();
+
   useEffect(() => {
     Thread.postPage = 0;
     if (props.thread === undefined) {

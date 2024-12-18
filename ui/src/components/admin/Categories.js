@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Button, Container, Row, Col, Modal, Form } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 import { getCategories } from "../../api/category";

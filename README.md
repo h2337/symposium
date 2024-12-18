@@ -1,7 +1,7 @@
 ### Symposium
 #### Screenshots
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/screenshots.png?token=AKL72S3K46U454LWBTH5YXS6XVFAQ">
+  <img src="https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/screenshots.png?token=AKL72S64U56LXZD67FZTX7S6XVFKU">
 </p>
 
 #### Installation

@@ -23,6 +23,7 @@ function SignInModal(props) {
             let responseBodyObject = JSON.parse(responseBody);
             props.onLogin(
               username,
+              responseBodyObject.id,
               responseBodyObject.email,
               responseBodyObject.access,
               responseBodyObject.token
@@ -97,8 +98,8 @@ function SignInModal(props) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onLogin: (username, email, access, token) =>
-    dispatch({ type: LOGIN, username, email, access, token }),
+  onLogin: (username, id, email, access, token) =>
+    dispatch({ type: LOGIN, username, id, email, access, token }),
 });
 
 export default connect(null, mapDispatchToProps)(SignInModal);

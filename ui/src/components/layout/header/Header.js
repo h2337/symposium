@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Button } from "react-bootstrap";
+import { Navbar, Nav, Button, Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
@@ -24,15 +24,25 @@ function Header(props) {
   if (props.username.length > 0 && props.token.length > 0) {
     if (props.access == "99")
       userButtons = (
-        <>
-          <Button variant="primary" onClick={handleAdminPanelClick}>
-            Admin
-          </Button>
-          &nbsp;
-          <Button variant="primary" onClick={handleLogout}>
-            Log out
-          </Button>
-        </>
+        <Dropdown drop="left">
+          <Dropdown.Toggle variant="primary">
+            <img
+              src={process.env.API_URL + "/avatars/" + props.userId + ".jpg"}
+              width="25"
+              height="25"
+              style={{ borderRadius: "50%" }}
+            />
+            &nbsp;
+            {props.username}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleAdminPanelClick}>
+              Admin panel
+            </Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       );
     else
       userButtons = (
@@ -66,6 +76,7 @@ function Header(props) {
 
 function mapStateToProps(state) {
   return {
+    userId: state.user.id,
     username: state.user.username,
     token: state.user.token,
     access: state.user.access,

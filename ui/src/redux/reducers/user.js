@@ -2,6 +2,7 @@ import { LOGIN, LOGOUT } from "../actionTypes";
 
 const initialState = {
   username: "",
+  id: "",
   token: "",
   userId: "",
   email: "",
@@ -14,6 +15,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         username: action.username,
+        id: action.id,
         token: action.token,
         email: action.email,
         access: action.access,
@@ -23,6 +25,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         username: "",
+        id: "",
         token: "",
         email: "",
         access: "",

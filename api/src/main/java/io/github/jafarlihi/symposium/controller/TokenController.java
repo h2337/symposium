@@ -44,7 +44,7 @@ public class TokenController {
         String passwordHash = DigestUtils.sha256Hex(password);
         if (passwordHash.equals(user.getPassword())) {
             response.put("token", authenticationService.createToken(user))
-                    .put("userId", user.getId())
+                    .put("id", user.getId())
                     .put("username", user.getUsername())
                     .put("email", user.getEmail())
                     .put("access", user.getAccess());

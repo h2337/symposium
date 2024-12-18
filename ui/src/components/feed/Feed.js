@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import NewThread from "./NewThread";
-import { LOGOUT, LOAD_CATEGORIES } from "../../redux/actionTypes";
+import { LOGOUT } from "../../redux/actionTypes";
 import {
   Container,
   Row,
@@ -25,20 +25,16 @@ function Feed(props) {
   const [hasMoreThreads, setHasMoreThreads] = useState(true);
   const [categories, setCategories] = useState([]);
   const { categoryId } = useParams();
-  const isMobile = useMediaQuery({ query: "(max-width: 800px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
   useEffect(() => {
-    Feed.threadPage = 0;
+    resetFeed();
     initialLoad();
   }, []);
 
   useEffect(() => {
     resetFeed();
   }, [categoryId]);
-
-  useEffect(() => {
-    if (threads.length === 0) getThreads();
-  }, [threads]);
 
   let isLoggedIn = false; // TODO: Does this belong here?
   if (props.username.length > 0 && props.token.length > 0) {
@@ -103,10 +99,10 @@ function Feed(props) {
 
   return (
     <>
-      <Container>
+      <Container fluid>
         <Row>
           {!isMobile && (
-            <Col xs="2">
+            <Col xs="1">
               {isLoggedIn && (
                 <>
                   <br></br>
@@ -132,14 +128,25 @@ function Feed(props) {
                           fontSize: 10,
                         }}
                       ></i>{" "}
-                      {v.name}
+                      {v.name.length < 11 && v.name}
+                      {v.name.length > 10 &&
+                        [...v.name].map((v, i) => {
+                          if (i % 10 === 0)
+                            return (
+                              <>
+                                <br></br>
+                                {v}
+                              </>
+                            );
+                          return <>{v}</>;
+                        })}
                     </Link>
                   </Badge>
                 </div>
               ))}
             </Col>
           )}
-          <Col xs="10">
+          <Col xs="11">
             {isMobile && (
               <>
                 {isLoggedIn && (

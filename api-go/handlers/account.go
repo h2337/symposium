@@ -35,7 +35,7 @@ func CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Failed to hash the password"}`)
 		return
 	}
-	err = repositories.CreateUser(acr.Username, acr.Email, string(passwordHash))
+	_, err = repositories.CreateUser(acr.Username, acr.Email, string(passwordHash))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, fmt.Sprintf(`{"error": "%s"}`, err.Error()))

@@ -26,12 +26,17 @@ func GetCategories() ([]models.Category, error) {
 	return categories, nil
 }
 
-func CreateCategory(name string, color string, icon string) error {
+func CreateCategory(name string, color string, icon string) (int64, error) {
 	sql := "INSERT INTO categories (name, color, icon) VALUES ($1, $2, $3)"
-	_, err := database.Database.Exec(sql, name, color, icon)
+	res, err := database.Database.Exec(sql, name, color, icon)
 	if err != nil {
 		logger.Log.Error("Failed to INSERT a new category, error: " + err.Error())
-		return err
+		return 0, err
 	}
-	return nil
+	id, err := res.LastInsertId()
+	if err != nil {
+		logger.Log.Error("Failed to get ID of newly INSERTed category, error: " + err.Error())
+		return 0, err
+	}
+	return id, nil
 }

@@ -19,6 +19,7 @@ func main() {
 	router.HandleFunc("/account", handlers.CreateAccountHandler).Methods("POST")
 	router.HandleFunc("/category", handlers.GetCategories).Methods("GET")
 	router.HandleFunc("/category", handlers.CreateCategory).Methods("POST")
+	router.HandleFunc("/thread", handlers.CreateThread).Methods("POST")
 	server := &http.Server{
 		Handler:      router,
 		Addr:         config.Config.HttpServer.ListenAddress,

@@ -20,7 +20,7 @@ CREATE TABLE threads (
     user_id integer NOT NULL,
     title character varying NOT NULL,
     category_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (category_id) REFERENCES categories (id)
@@ -28,11 +28,11 @@ CREATE TABLE threads (
 
 CREATE TABLE posts (
     id serial NOT NULL,
-    thread_id integer NOT NULL,
     user_id integer NOT NULL,
+    thread_id integer NOT NULL,
     post_number integer NOT NULL,
     content text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
     updated_at timestamp without time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (thread_id) REFERENCES threads (id),

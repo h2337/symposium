@@ -30,12 +30,17 @@ func GetUserByUsername(username string) (*models.User, error) {
 	return &user, nil
 }
 
-func CreateUser(username string, email string, password string) error {
+func CreateUser(username string, email string, password string) (int64, error) {
 	sql := "INSERT INTO users (username, email, password, access) VALUES ($1, $2, $3, 0)"
-	_, err := database.Database.Exec(sql, username, email, password)
+	res, err := database.Database.Exec(sql, username, email, password)
 	if err != nil {
 		logger.Log.Error("Failed to INSERT a new user, error: " + err.Error())
-		return err
+		return 0, err
 	}
-	return nil
+	id, err := res.LastInsertId()
+	if err != nil {
+		logger.Log.Error("Failed to get ID of newly INSERTed thread, error: " + err.Error())
+		return 0, err
+	}
+	return id, nil
 }

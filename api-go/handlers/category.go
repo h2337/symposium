@@ -41,9 +41,9 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Request body couldn't be parsed as JSON"}`)
 		return
 	}
-	if ccr.Name == "" || ccr.Color == "" || ccr.Token == "" {
+	if ccr.Token == "" || ccr.Name == "" || ccr.Color == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, `{"error": "Name, color, and/or token field(s) is/are missing"}`)
+		io.WriteString(w, `{"error": "Token, name, and/or color field(s) is/are missing"}`)
 		return
 	}
 	token, err := jwt.Parse(ccr.Token, func(token *jwt.Token) (interface{}, error) {

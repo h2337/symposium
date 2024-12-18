@@ -22,6 +22,26 @@ func GetFollow(userID uint32, threadID uint32) (*models.Follow, error) {
 	return &follow, nil
 }
 
+func GetFollowsByThreadID(threadID uint32) ([]*models.Follow, error) {
+	sql := "SELECT id, user_id, thread_id FROM follows WHERE thread_id = $1"
+	rows, err := database.Database.Query(sql, threadID)
+	if err != nil {
+		logger.Log.Error("Failed to SELECT follows, error: " + err.Error())
+		return nil, err
+	}
+	follows := make([]*models.Follow, 0)
+	for rows.Next() {
+		follow := &models.Follow{}
+		if err := rows.Scan(&follow.ID, &follow.UserID, &follow.ThreadID); err != nil {
+			logger.Log.Error("Failed to scan SELECTed row of follows, error: " + err.Error())
+			return nil, err
+		}
+		follows = append(follows, follow)
+	}
+	return follows, nil
+
+}
+
 func DeleteFollow(userID uint32, threadID uint32) error {
 	sql := "DELETE FROM follows WHERE user_id = $1 AND thread_id = $2"
 	_, err := database.Database.Exec(sql, userID, threadID)

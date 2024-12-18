@@ -50,3 +50,14 @@ func MarkNotificationsSeen(userID uint32, IDs []int) error {
 	}
 	return nil
 }
+
+func CreateThreadFollowNotification(userID uint32, content string, link string, threadID uint32, postID uint32) (int64, error) {
+	sql := "INSERT INTO notifications (type, user_id, content, link, thread_id, post_id) VALUES (1, $1, $2, $3, $4, $5) RETURNING id"
+	var id int64
+	err := database.Database.QueryRow(sql, userID, content, link, threadID, postID).Scan(&id)
+	if err != nil {
+		logger.Log.Error("Failed to INSERT a new notification, error: " + err.Error())
+		return 0, err
+	}
+	return id, nil
+}

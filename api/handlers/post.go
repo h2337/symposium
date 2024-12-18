@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jafarlihi/symposium/api/config"
 	"github.com/jafarlihi/symposium/api/repositories"
+	"github.com/jafarlihi/symposium/api/services"
 	"io"
 	"net/http"
 	"strconv"
@@ -127,12 +128,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Thread with the provided threadID does not exist"}`)
 		return
 	}
-	_, err = repositories.CreatePost(uint32(userID), pcr.ThreadID, pcr.Content)
+	postID, err := repositories.CreatePost(uint32(userID), pcr.ThreadID, pcr.Content)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to create the post"}`)
 		return
 	}
+	_ = services.EmitThreadFollowNotifications(uint32(userID), uint32(postID), pcr.ThreadID)
 	w.WriteHeader(http.StatusOK)
 }
 

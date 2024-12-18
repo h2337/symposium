@@ -79,3 +79,4 @@ CREATE TABLE notifications (
 INSERT INTO settings (name, value) VALUES ('siteName', 'Symposium');
 INSERT INTO settings (name, value) VALUES ('isInitialized', 'false');
 
+INSERT INTO notification_types (id, name) VALUES (1, 'Post in followed thread');

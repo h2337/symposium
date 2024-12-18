@@ -56,8 +56,17 @@ function Header(props) {
     if (props.isTouring) setIsTourOpen(props.isTourOpen);
   }, [props.isTourOpen]);
 
+  let notificationCountFetcher = undefined;
+
   useEffect(() => {
-    if (props.token.length > 0) fetchUnseenNotificationCount();
+    if (props.token.length > 0) {
+      if (notificationCountFetcher === undefined) {
+        notificationCountFetcher = setInterval(() => {
+          fetchUnseenNotificationCount();
+        }, 5000);
+      }
+      fetchUnseenNotificationCount();
+    }
   }, [props.token, notifications]);
 
   useEffect(() => {

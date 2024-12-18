@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/thread")
@@ -47,7 +48,7 @@ public class ThreadController {
         }
         if (title == null || content == null || title.equals("") || content.equals(""))
             return new ResponseEntity<>(response.put("error", "Content and/or title is missing").toString(), HttpStatus.BAD_REQUEST);
-        if (categoryService.getCategoryById(categoryId) == null)
+        if (categoryService.getCategoryById(categoryId).isEmpty())
             return new ResponseEntity<>(response.put("error", "Non-existing categoryId provided").toString(), HttpStatus.BAD_REQUEST);
         Thread thread = threadService.createThread(userId, title, categoryId);
         if (thread == null)
@@ -71,5 +72,19 @@ public class ThreadController {
         else
             threads = threadService.getThreadsByCategoryId(categoryId, page, pageSize);
         return new ResponseEntity<>(response.put("threads", threads).toString(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getThread(@PathVariable String id) {
+        JSONObject response = new JSONObject();
+        Optional<Thread> thread = threadService.getThread(Long.parseLong(id));
+        if (thread.isEmpty())
+            return new ResponseEntity<>(response.put("error", "Thread doesn't exist").toString(), HttpStatus.BAD_REQUEST);
+        response.put("id", thread.get().getId())
+                .put("title", thread.get().getTitle())
+                .put("userId", thread.get().getUserId())
+                .put("categoryId", thread.get().getCategoryId())
+                .put("createdAt", thread.get().getCreatedAt());
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 }

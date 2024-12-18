@@ -24,11 +24,8 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category getCategoryById(Long id) {
-        Optional<Category> category = categoryRepository.findById(id);
-        if (category.isEmpty())
-            return null;
-        return category.get();
+    public Optional<Category> getCategoryById(Long id) {
+        return categoryRepository.findById(id);
     }
 
     public Category createCategory(String name, String color) {

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { loadCategories, createCategory } from "../../api/category";
 import { toast } from "react-toastify";
 import DeleteCategoryModal from "./DeleteCategoryModal";
+import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 
 function Categories(props) {
   const [name, setName] = useState("");
@@ -21,6 +22,7 @@ function Categories(props) {
           r.text().then((responseBody) => {
             let responseBodyObject = JSON.parse(responseBody);
             setCategories(responseBodyObject.categories);
+            onCategoryLoad(responseBodyObject.categories);
           });
         } else {
           toast.error("Failed to load the categories");
@@ -156,4 +158,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(Categories);
+const mapDispatchToProps = (dispatch) => ({
+  onCategoryLoad: (categories) =>
+    dispatch({ type: LOAD_CATEGORIES, categories }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Categories);

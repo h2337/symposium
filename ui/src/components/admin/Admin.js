@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import Categories from "./Categories";
 
@@ -15,4 +14,4 @@ function Admin(props) {
   );
 }
 
-export default connect(null)(Admin);
+export default Admin;

@@ -9,6 +9,12 @@ export function loadThreads(categoryId, page, pageSize) {
   });
 }
 
+export function loadThread(id) {
+  return fetch(process.env.API_URL + "/thread/" + id, {
+    method: "GET",
+  });
+}
+
 export function createThread(token, title, content, categoryId) {
   return fetch(process.env.API_URL + "/thread", {
     method: "POST",

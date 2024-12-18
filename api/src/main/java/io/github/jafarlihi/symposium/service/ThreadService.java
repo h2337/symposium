@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ThreadService {
@@ -19,6 +20,10 @@ public class ThreadService {
     private ThreadRepository threadRepository;
     @Autowired
     private PostRepository postRepository;
+
+    public Optional<Thread> getThread(Long id) {
+        return threadRepository.findById(id);
+    }
 
     public List<Thread> getThreads(Integer page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import NewThread from "./NewThread";
-import { LOGOUT } from "../../redux/actionTypes";
+import { LOAD_CATEGORIES, OPEN_THREAD } from "../../redux/actionTypes";
 import {
   Container,
   Row,
@@ -17,7 +17,7 @@ import { loadCategories } from "../../api/category";
 import { loadThreads } from "../../api/thread";
 import { toast } from "react-toastify";
 import InfiniteScroll from "react-infinite-scroller";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 
 function Feed(props) {
@@ -25,6 +25,7 @@ function Feed(props) {
   const [hasMoreThreads, setHasMoreThreads] = useState(true);
   const [categories, setCategories] = useState([]);
   const { categoryId } = useParams();
+  const history = useHistory();
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
   useEffect(() => {
@@ -50,6 +51,7 @@ function Feed(props) {
             r.text().then((responseBody) => {
               let responseBodyObject = JSON.parse(responseBody);
               setCategories(responseBodyObject.categories);
+              props.onCategoryLoad(responseBodyObject.categories);
               resolve("Categories loaded");
             });
           } else {
@@ -94,6 +96,11 @@ function Feed(props) {
         }
       })
       .catch((e) => toast.error("Failed to fetch threads."));
+  }
+
+  function openThread(thread) {
+    props.onThreadOpen(thread);
+    history.push("/thread/" + thread.id);
   }
 
   // TODO: Make mobile category dropdown Link not href
@@ -186,7 +193,7 @@ function Feed(props) {
               loader={
                 <Spinner
                   style={{ margin: "auto", display: "table" }}
-                  animation="grow"
+                  animation="border"
                 />
               }
             >
@@ -194,7 +201,7 @@ function Feed(props) {
                 <div key={i}>
                   <div
                     className={classes.feedThreadBox}
-                    onClick={(e) => console.log(v)}
+                    onClick={() => openThread(v)}
                   >
                     <h5 style={{ marginBottom: 0 }}>
                       {v != undefined && v.title}
@@ -246,7 +253,9 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onLogout: () => dispatch({ type: LOGOUT }),
+  onCategoryLoad: (categories) =>
+    dispatch({ type: LOAD_CATEGORIES, categories }),
+  onThreadOpen: (thread) => dispatch({ type: OPEN_THREAD, thread }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Feed);

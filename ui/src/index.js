@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Feed from "./components/feed/Feed";
 import Admin from "./components/admin/Admin";
 import Header from "./components/layout/header/Header";
+import Thread from "./components/thread/Thread";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
@@ -20,6 +21,7 @@ ReactDOM.render(
         <Switch>
           <Route exact path="/" component={Feed} />
           <Route path="/category/:categoryId" component={Feed} />
+          <Route path="/thread/:threadId" component={Thread} />
           <Route path="/admin" component={Admin} />
         </Switch>
       </Router>

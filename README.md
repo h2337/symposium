@@ -7,7 +7,9 @@
 ![5th screenshot](https://raw.githubusercontent.com/jafarlihi/symposium/master/repo/screenshots/5.png?token=AKL72SZC7BD3GJBGHGXXIM26XGQ52)
 #### Installation
 Write down PostgreSQL details, JWT signing secret, and port to `./api/config.json`.
+
 Write API URL to `build.sh` "export API_URL=" line.
+
 Run `build.sh` and then run `./build/api`.
 #### Features
 - [x] User login/register

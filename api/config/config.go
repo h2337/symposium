@@ -15,9 +15,7 @@ type databaseConfig struct {
 }
 
 type httpServerConfig struct {
-	ListenAddress       string `json:"listenAddress"`
-	WriteTimeoutSeconds int    `json:"writeTimeoutSeconds"`
-	ReadTimeoutSeconds  int    `json:"readTimeoutSeconds"`
+	Port string `json:"port"`
 }
 
 type configuration struct {

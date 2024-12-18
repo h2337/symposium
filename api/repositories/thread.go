@@ -26,6 +26,26 @@ func GetThreads(page uint32, pageSize uint32) ([]*models.Thread, error) {
 	return threads, nil
 }
 
+func GetThreadsByCategoryID(categoryID uint32, page uint32, pageSize uint32) ([]*models.Thread, error) {
+	sql := "SELECT id, user_id, title, category_id, created_at FROM threads WHERE category_id = $1 ORDER BY created_at DESC OFFSET $2 LIMIT $3"
+	rows, err := database.Database.Query(sql, categoryID, page*pageSize, pageSize)
+	if err != nil {
+		logger.Log.Error("Failed to SELECT threads, error: " + err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+	threads := make([]*models.Thread, 0)
+	for rows.Next() {
+		thread := &models.Thread{}
+		if err := rows.Scan(&thread.ID, &thread.UserID, &thread.Title, &thread.CategoryID, &thread.CreatedAt); err != nil {
+			logger.Log.Error("Failed to scan SELECTed row of threads, error: " + err.Error())
+			return nil, err
+		}
+		threads = append(threads, thread)
+	}
+	return threads, nil
+}
+
 func GetThread(id uint32) (*models.Thread, error) {
 	sql := "SELECT id, user_id, title, category_id, created_at FROM threads WHERE id = $1"
 	row := database.Database.QueryRow(sql, id)

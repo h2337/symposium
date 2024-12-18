@@ -6,8 +6,6 @@
         "url": "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"
     },
     "httpServer": {
-        "listenAddress": "0.0.0.0:8081",
-        "writeTimeoutSeconds": 15,
-        "readTimeoutSeconds": 15
+        "port": "8081"
     }
 }

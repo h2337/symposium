@@ -1,13 +1,13 @@
 package main
 
 import (
+	gorillaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jafarlihi/symposium/backend/config"
 	"github.com/jafarlihi/symposium/backend/database"
 	"github.com/jafarlihi/symposium/backend/handlers"
 	"github.com/jafarlihi/symposium/backend/logger"
 	"net/http"
-	"time"
 )
 
 func main() {
@@ -25,12 +25,7 @@ func main() {
 	router.HandleFunc("/thread/{id}", handlers.GetThread).Methods("GET")
 	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
-	server := &http.Server{
-		Handler:      router,
-		Addr:         config.Config.HttpServer.ListenAddress,
-		WriteTimeout: time.Duration(config.Config.HttpServer.WriteTimeoutSeconds) * time.Second,
-		ReadTimeout:  time.Duration(config.Config.HttpServer.ReadTimeoutSeconds) * time.Second,
-	}
-	logger.Log.Info("Starting HTTP server listening at " + config.Config.HttpServer.ListenAddress)
-	logger.Log.Critical(server.ListenAndServe())
+	cors := gorillaHandlers.AllowedOrigins([]string{"*"})
+	logger.Log.Info("Starting HTTP server listening at " + config.Config.HttpServer.Port)
+	logger.Log.Critical(http.ListenAndServe(":"+config.Config.HttpServer.Port, gorillaHandlers.CORS(cors)(router)))
 }

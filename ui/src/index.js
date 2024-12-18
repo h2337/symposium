@@ -20,8 +20,8 @@ ReactDOM.render(
         <Header />
         <Switch>
           <Route exact path="/" component={Feed} />
-          <Route path="/category/:categoryId" component={Feed} />
-          <Route path="/thread/:threadId" component={Thread} />
+          <Route path="/category/:categoryID" component={Feed} />
+          <Route path="/thread/:threadID" component={Thread} />
           <Route path="/admin" component={Admin} />
         </Switch>
       </Router>

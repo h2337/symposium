@@ -6,6 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/jafarlihi/symposium/backend/config"
+	"github.com/jafarlihi/symposium/backend/models"
 	"github.com/jafarlihi/symposium/backend/repositories"
 	"io"
 	"net/http"
@@ -39,7 +40,7 @@ func GetThread(w http.ResponseWriter, r *http.Request) {
 
 func GetThreads(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
-	if queryParams["page"][0] == "" || queryParams["pageSize"][0] == "" {
+	if len(queryParams["page"]) == 0 || queryParams["page"][0] == "" || len(queryParams["pageSize"]) == 0 || queryParams["pageSize"][0] == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "page and/or pageSize query parameters are missing"}`)
 		return
@@ -56,7 +57,16 @@ func GetThreads(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "pageSize query parameter couldn't be parsed as an integer"}`)
 		return
 	}
-	threads, err := repositories.GetThreads(uint32(page), uint32(pageSize))
+	var categoryID uint64
+	if len(queryParams["categoryID"]) != 0 {
+		categoryID, err = strconv.ParseUint(queryParams["categoryID"][0], 10, 32)
+	}
+	var threads []*models.Thread
+	if err == nil && categoryID != 0 {
+		threads, err = repositories.GetThreadsByCategoryID(uint32(categoryID), uint32(page), uint32(pageSize))
+	} else {
+		threads, err = repositories.GetThreads(uint32(page), uint32(pageSize))
+	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to get the threads"}`)

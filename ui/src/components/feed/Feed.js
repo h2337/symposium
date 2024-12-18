@@ -24,14 +24,14 @@ function Feed(props) {
   const [threads, setThreads] = useState([]);
   const [hasMoreThreads, setHasMoreThreads] = useState(true);
   const [categories, setCategories] = useState([]);
-  const { categoryId } = useParams();
+  const { categoryID } = useParams();
   const history = useHistory();
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
 
   useEffect(() => {
     resetFeed();
     initialLoad();
-  }, [categoryId]);
+  }, [categoryID]);
 
   let isLoggedIn = false; // TODO: Does this belong here?
   if (props.username.length > 0 && props.token.length > 0) {
@@ -50,8 +50,8 @@ function Feed(props) {
           if (r.status === 200) {
             r.text().then((responseBody) => {
               let responseBodyObject = JSON.parse(responseBody);
-              setCategories(responseBodyObject.categories);
-              props.onCategoryLoad(responseBodyObject.categories);
+              setCategories(responseBodyObject);
+              props.onCategoryLoad(responseBodyObject);
               resolve("Categories loaded");
             });
           } else {
@@ -79,17 +79,13 @@ function Feed(props) {
   })();
 
   function getThreads() {
-    loadThreads(categoryId, Feed.threadPage++, 10)
+    loadThreads(categoryID, Feed.threadPage++, 10)
       .then((r) => {
         if (r.status === 200) {
           r.text().then((responseBody) => {
             let responseBodyObject = JSON.parse(responseBody);
-            if (responseBodyObject.threads.length === 0)
-              setHasMoreThreads(false);
-            setThreads((threads) => [
-              ...threads,
-              ...responseBodyObject.threads,
-            ]);
+            if (responseBodyObject.length === 0) setHasMoreThreads(false);
+            setThreads((threads) => [...threads, ...responseBodyObject]);
           });
         } else {
           toast.error("Failed to fetch threads");
@@ -123,7 +119,7 @@ function Feed(props) {
               <br></br>
               {categories.map((v, i) => (
                 <div key={i}>
-                  <Badge variant={v.id == categoryId ? "primary" : "light"}>
+                  <Badge variant={v.id == categoryID ? "primary" : "light"}>
                     <Link
                       to={"/category/" + v.id}
                       style={{ color: "black", textDecoration: "none" }}
@@ -168,7 +164,7 @@ function Feed(props) {
                   {categories.map((v, i) => (
                     <Dropdown.Item key={i} href={"/category/" + v.id}>
                       {" "}
-                      <Badge variant={v.id == categoryId ? "primary" : "light"}>
+                      <Badge variant={v.id == categoryID ? "primary" : "light"}>
                         <i
                           className="fa fa-circle"
                           style={{
@@ -212,14 +208,14 @@ function Feed(props) {
                         color:
                           "#" +
                           categories.find(
-                            (category) => category.id === v.categoryId
+                            (category) => category.id === v.categoryID
                           ).color,
                         fontSize: 10,
                       }}
                     ></i>{" "}
                     {
                       categories.find(
-                        (category) => category.id === v.categoryId
+                        (category) => category.id === v.categoryID
                       ).name
                     }
                   </div>

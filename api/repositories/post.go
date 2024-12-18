@@ -6,7 +6,7 @@ import (
 	"github.com/jafarlihi/symposium/backend/models"
 )
 
-func GetPosts(page uint32, pageSize uint32, threadID uint32) ([]*models.Post, error) {
+func GetPosts(threadID uint32, page uint32, pageSize uint32) ([]*models.Post, error) {
 	sql := "SELECT id, user_id, thread_id, post_number, content, created_at, updated_at FROM threads WHERE thread_id = $1 ORDER BY created_at DESC OFFSET $2 LIMIT $3"
 	rows, err := database.Database.Query(sql, threadID, page*pageSize, pageSize)
 	if err != nil {

@@ -13,7 +13,7 @@ import (
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
-	if queryParams["page"][0] == "" || queryParams["pageSize"][0] == "" || queryParams["threadID"][0] == "" {
+	if len(queryParams["threadID"]) == 0 || queryParams["threadID"][0] == "" || len(queryParams["page"]) == 0 || queryParams["page"][0] == "" || len(queryParams["pageSize"]) == 0 || queryParams["pageSize"][0] == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w, `{"error": "page, pageSize, and/or threadID query parameters are missing"}`)
 		return
@@ -36,7 +36,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "threadID query parameter couldn't be parsed as an integer"}`)
 		return
 	}
-	posts, err := repositories.GetPosts(uint32(page), uint32(pageSize), uint32(threadID))
+	posts, err := repositories.GetPosts(uint32(threadID), uint32(page), uint32(pageSize))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to get the posts"}`)

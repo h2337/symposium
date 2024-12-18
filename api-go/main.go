@@ -21,6 +21,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/token", handlers.CreateTokenHandler).Methods("POST")
 	router.HandleFunc("/account", handlers.CreateAccountHandler).Methods("POST")
+	router.HandleFunc("/category", handlers.GetCategories).Methods("GET")
 	server := &http.Server{
 		Handler:      router,
 		Addr:         config.Config.HttpServer.ListenAddress,

@@ -10,7 +10,7 @@ import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
 
 function Header(props) {
-  const [siteName, setSiteName] = useState([]);
+  const [siteName, setSiteName] = useState("");
   const history = useHistory();
   const [cookies, setCookie, removeCookie] = useCookies([]);
 

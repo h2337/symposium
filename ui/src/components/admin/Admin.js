@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import { Tabs, Tab } from "react-bootstrap";
 import { LOGIN } from "../../redux/actionTypes";
 import Categories from "./Categories";
+import GeneralSettings from "./GeneralSettings";
 
 function Admin(props) {
   const [cookies, setCookie] = useCookies([]);
@@ -26,8 +27,10 @@ function Admin(props) {
   }, []);
 
   return (
-    <Tabs defaultActiveKey="categories">
-      <Tab eventKey="general" title="General" disabled></Tab>
+    <Tabs defaultActiveKey="general">
+      <Tab eventKey="general" title="General">
+        <GeneralSettings />
+      </Tab>
       <Tab eventKey="categories" title="Categories">
         <Categories />
       </Tab>

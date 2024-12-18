@@ -25,3 +25,15 @@ func GetSettings() ([]*models.Setting, error) {
 	}
 	return settings, nil
 }
+
+func UpdateSettings(settings map[string]string) error {
+	sql := "UPDATE settings SET value = $1 WHERE name = $2"
+	for k, v := range settings {
+		_, err := database.Database.Exec(sql, v, k)
+		if err != nil {
+			logger.Log.Error("Failed to UPDATE a setting, error: " + err.Error())
+			return err
+		}
+	}
+	return nil
+}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 import {
   CLOSE_TOUR,
   TOUR_CHANGE_STEP,
@@ -15,6 +16,7 @@ function SignUpModal(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
+  const { handleSubmit, register, errors } = useForm();
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -66,11 +68,13 @@ function SignUpModal(props) {
     }
   }
 
+  /* TODO: Fix this
   function handleKeyDown(event) {
     if (event.which === 13) {
-      handleSignUp();
+      handleSubmit(handleSignUp);
     }
   }
+  */
 
   return (
     <>
@@ -91,7 +95,7 @@ function SignUpModal(props) {
                 placeholder="Enter username"
                 name="username"
                 onChange={handleChange}
-                onKeyDown={handleKeyDown}
+                //onKeyDown={handleKeyDown}
               />
             </Form.Group>
             <Form.Group controlId="email">
@@ -101,8 +105,18 @@ function SignUpModal(props) {
                 placeholder="Enter email"
                 name="email"
                 onChange={handleChange}
-                onKeyDown={handleKeyDown}
+                //onKeyDown={handleKeyDown}
+                ref={register({
+                  required: "Required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
               />
+              <span style={{ color: "red" }}>
+                {errors.email && errors.email.message}
+              </span>
             </Form.Group>
             <Form.Group controlId="password">
               <Form.Label>Password</Form.Label>
@@ -111,8 +125,16 @@ function SignUpModal(props) {
                 placeholder="Password"
                 name="password"
                 onChange={handleChange}
-                onKeyDown={handleKeyDown}
+                ref={register({
+                  validate: (value) =>
+                    value.length > 5 ||
+                    "Password should be at least 6 characters long",
+                })}
+                //onKeyDown={handleKeyDown}
               />
+              <span style={{ color: "red" }}>
+                {errors.password && errors.password.message}
+              </span>
             </Form.Group>
             <Form.Group controlId="passwordRepeat">
               <Form.Label>Repeat password</Form.Label>
@@ -121,7 +143,7 @@ function SignUpModal(props) {
                 placeholder="Password again"
                 name="passwordRepeat"
                 onChange={handleChange}
-                onKeyDown={handleKeyDown}
+                //onKeyDown={handleKeyDown}
               />
             </Form.Group>
           </Form>
@@ -130,7 +152,7 @@ function SignUpModal(props) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSignUp}>
+          <Button variant="primary" onClick={handleSubmit(handleSignUp)}>
             Sign up
           </Button>
         </Modal.Footer>

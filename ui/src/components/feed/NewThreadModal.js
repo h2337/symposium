@@ -14,8 +14,12 @@ function NewThreadModal(props) {
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
-    setEditorValue("");
-    setShow(true);
+    if (props.categories === undefined || props.categories.length === 0) {
+      toast.error("No categories exist, threads cannot be created.");
+    } else {
+      setEditorValue("");
+      setShow(true);
+    }
   };
 
   function handleChange(event) {

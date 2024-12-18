@@ -124,7 +124,14 @@ function Thread(props) {
 
   function formatDate(date) {
     let d = new Date(date);
-    return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
+    let minutes = d.getMinutes();
+    return (
+      d.toDateString() +
+      " " +
+      d.getHours() +
+      ":" +
+      (minutes < 10 ? "0" + minutes : minutes)
+    );
   }
 
   return (

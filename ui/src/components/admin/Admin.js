@@ -1,10 +1,9 @@
-import React from "react";
-import { Tabs, Tab } from "react-bootstrap";
-import { useCookies } from "react-cookie";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { useEffect } from "react";
-import Categories from "./Categories";
+import { useCookies } from "react-cookie";
+import { Tabs, Tab } from "react-bootstrap";
 import { LOGIN } from "../../redux/actionTypes";
+import Categories from "./Categories";
 
 function Admin(props) {
   const [cookies, setCookie] = useCookies([]);

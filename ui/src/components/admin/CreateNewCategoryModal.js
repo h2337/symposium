@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
-import { SketchPicker } from "react-color";
 import { connect } from "react-redux";
+import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { SketchPicker } from "react-color";
 import { createCategory } from "../../api/category";
 
 function CreateNewCategoryModal(props) {

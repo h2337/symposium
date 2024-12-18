@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { connect } from "react-redux";
 import { useParams, Link, useHistory } from "react-router-dom";
-import { LOGIN, OPEN_THREAD } from "../../redux/actionTypes";
 import { Container, Row, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getUser } from "../../api/user";
-import { getPostsByUserID } from "../../api/post";
+import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
 import DOMPurify from "dompurify";
+import { LOGIN, OPEN_THREAD } from "../../redux/actionTypes";
+import { getUser } from "../../api/user";
+import { getPostsByUserID } from "../../api/post";
 
 function Profile(props) {
   const [cookies, setCookie] = useCookies([]);
@@ -102,9 +102,13 @@ function Profile(props) {
           {posts.map((v, i) => (
             <>
               <Card style={{ width: "100%" }}>
-                <Link onClick={() => openThread(v)}>
-                  <Card.Title>{v.threadTitle}</Card.Title>
+                <Link
+                  style={{ marginLeft: "10px" }}
+                  onClick={() => openThread(v)}
+                >
+                  {v.threadTitle}
                 </Link>
+                <hr></hr>
                 <Card.Body>
                   <div
                     dangerouslySetInnerHTML={{
@@ -122,10 +126,19 @@ function Profile(props) {
   );
 }
 
+function mapStateToProps(state) {
+  return {
+    userID: state.user.id,
+    username: state.user.username,
+    token: state.user.token,
+    access: state.user.access,
+  };
+}
+
 const mapDispatchToProps = (dispatch) => ({
   onLogin: (username, id, email, access, token) =>
     dispatch({ type: LOGIN, username, id, email, access, token }),
   onThreadOpen: (thread) => dispatch({ type: OPEN_THREAD, thread }),
 });
 
-export default connect(null, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

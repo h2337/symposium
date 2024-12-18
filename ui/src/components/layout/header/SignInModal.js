@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
-import { createToken } from "../../../api/token";
-import { toast } from "react-toastify";
 import { connect } from "react-redux";
-import { LOGIN } from "../../../redux/actionTypes";
+import { Button, Modal, Form } from "react-bootstrap";
+import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
+import { LOGIN } from "../../../redux/actionTypes";
+import { createToken } from "../../../api/token";
 
 function SignInModal(props) {
   const [show, setShow] = useState(false);

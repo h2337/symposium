@@ -4,7 +4,6 @@ const initialState = {
   username: "",
   id: "",
   token: "",
-  userId: "",
   email: "",
   access: "",
 };

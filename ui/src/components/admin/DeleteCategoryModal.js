@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { deleteCategory } from "../../api/category";
-import { toast } from "react-toastify";
 import { connect } from "react-redux";
+import { Button, Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { deleteCategory } from "../../api/category";
 
 function DeleteCategoryModal(props) {
   const [show, setShow] = useState(false);

@@ -21,7 +21,7 @@ func HandleWebsocket(w http.ResponseWriter, r *http.Request) {
 	defer connection.Close()
 	uuid := uuid.New()
 	threadChannel := make(chan *models.Thread)
-	connectionThreadChannels[uuid.String()] = threadChannel // TODO: Remove channel when connection is closed
+	connectionThreadChannels[uuid.String()] = threadChannel
 	for {
 		thread := <-threadChannel
 		jsonThread, err := json.Marshal(thread)
@@ -29,6 +29,9 @@ func HandleWebsocket(w http.ResponseWriter, r *http.Request) {
 			logger.Log.Error("Failed to marshal new thread as JSON for emitting through WebSocket, error: " + err.Error())
 			continue
 		}
-		connection.WriteMessage(1, jsonThread)
+		err = connection.WriteMessage(1, jsonThread)
+		if err != nil {
+			delete(connectionThreadChannels, uuid.String())
+		}
 	}
 }

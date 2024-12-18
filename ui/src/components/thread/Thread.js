@@ -1,17 +1,16 @@
-import React, { useState } from "react";
-import { Spinner, Container, Row, Col, Badge, Card } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams, Link } from "react-router-dom";
-import { useEffect } from "react";
-import { getThread } from "../../api/thread";
-import { getPosts } from "../../api/post";
-import { getCategories } from "../../api/category";
-import { LOAD_CATEGORIES, LOGIN } from "../../redux/actionTypes";
+import { Spinner, Container, Row, Col, Badge, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
 import DOMPurify from "dompurify";
+import { LOAD_CATEGORIES, LOGIN } from "../../redux/actionTypes";
+import { getThread } from "../../api/thread";
+import { getPosts } from "../../api/post";
+import { getCategories } from "../../api/category";
 import Reply from "./Reply";
 
 function Thread(props) {

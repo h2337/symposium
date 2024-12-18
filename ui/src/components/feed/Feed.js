@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import NewThread from "./NewThread";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { LOGIN, LOAD_CATEGORIES, OPEN_THREAD } from "../../redux/actionTypes";
 import {
   Container,
@@ -10,15 +10,14 @@ import {
   DropdownButton,
   Dropdown,
 } from "react-bootstrap";
-import { createUseStyles } from "react-jss";
-import { useEffect } from "react";
-import { getCategories } from "../../api/category";
-import { getThreads } from "../../api/thread";
 import { toast } from "react-toastify";
+import { createUseStyles } from "react-jss";
 import InfiniteScroll from "react-infinite-scroller";
-import { Link, useParams, useHistory } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
+import { getCategories } from "../../api/category";
+import { getThreads } from "../../api/thread";
+import NewThread from "./NewThread";
 
 function Feed(props) {
   const [threads, setThreads] = useState([]);

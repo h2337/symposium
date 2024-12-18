@@ -1,12 +1,12 @@
 import React from "react";
-import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
+import { useHistory, Link } from "react-router-dom";
+import { Navbar, Nav, Dropdown } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { useCookies } from "react-cookie";
+import { LOGOUT } from "../../../redux/actionTypes";
 import SignUpModal from "./SignUpModal";
 import SignInModal from "./SignInModal";
-import { toast } from "react-toastify";
-import { LOGOUT } from "../../../redux/actionTypes";
-import { useHistory, Link } from "react-router-dom";
-import { useCookies } from "react-cookie";
 
 function Header(props) {
   const history = useHistory();
@@ -59,14 +59,16 @@ function Header(props) {
 
               <Dropdown.Menu>
                 <Dropdown.Item onClick={handleProfileClick}>
-                  Profile
+                  <i className="fa fa-user"></i> Profile
                 </Dropdown.Item>
                 {props.access == "99" && (
                   <Dropdown.Item onClick={handleAdminPanelClick}>
-                    Admin panel
+                    <i className="fa fa-cogs"></i> Admin panel
                   </Dropdown.Item>
                 )}
-                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout}>
+                  <i className="fa fa-sign-out"></i> Logout
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           ) : (

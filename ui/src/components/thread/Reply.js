@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Button, Modal, Form, Dropdown, Col } from "react-bootstrap";
+import { connect } from "react-redux";
+import { Button, Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { createThread } from "../../api/thread";
-import { connect } from "react-redux";
-import { toast } from "react-toastify";
 import { createPost } from "../../api/post";
 
 function Reply(props) {

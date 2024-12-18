@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Row, Col, Modal, Form } from "react-bootstrap";
 import { connect } from "react-redux";
-import { getCategories } from "../../api/category";
+import { Button, Container, Row, Col, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { LOAD_CATEGORIES } from "../../redux/actionTypes";
+import { getCategories } from "../../api/category";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import CreateNewCategoryModal from "./CreateNewCategoryModal";
-import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 
 function Categories(props) {
   const [categories, setCategories] = useState([]);

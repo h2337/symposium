@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/jafarlihi/symposium/backend/repositories"
 	"golang.org/x/crypto/bcrypt"
 	"io"
@@ -38,7 +37,7 @@ func CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = repositories.CreateUser(acr.Username, acr.Email, string(passwordHash))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, fmt.Sprintf(`{"error": "%s"}`, err.Error()))
+		io.WriteString(w, `{"error": "Failed to create the user"}`)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

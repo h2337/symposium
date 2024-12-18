@@ -4,11 +4,41 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 	"github.com/jafarlihi/symposium/backend/config"
 	"github.com/jafarlihi/symposium/backend/repositories"
 	"io"
 	"net/http"
+	"strconv"
 )
+
+func GetThread(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	idString := params["id"]
+	id, err := strconv.ParseUint(idString, 10, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Provided ID can't be parsed as an integer"}`)
+		return
+	}
+	thread, err := repositories.GetThread(uint32(id))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to get the thread"`)
+		return
+	}
+	jsonResult, err := json.Marshal(thread)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, `{"error": "Failed to marshal the result to JSON"}`)
+	}
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, string(jsonResult))
+}
+
+func GetThreads(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getthreads")
+}
 
 type threadCreationRequest struct {
 	Token      string `json:"token"`

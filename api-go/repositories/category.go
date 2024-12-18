@@ -40,3 +40,13 @@ func CreateCategory(name string, color string, icon string) (int64, error) {
 	}
 	return id, nil
 }
+
+func DeleteCategory(id uint32) error {
+	sql := "DELETE FROM categories WHERE id = $1"
+	_, err := database.Database.Exec(sql, id)
+	if err != nil {
+		logger.Log.Error("Failed to DELETE a category, error: " + err.Error())
+		return err
+	}
+	return nil
+}

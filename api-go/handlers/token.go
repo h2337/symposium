@@ -44,7 +44,7 @@ func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
 			io.WriteString(w, `{"error": "User does not exist"}`)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
-			io.WriteString(w, fmt.Sprintf(`{"error": "%s"}`, err.Error()))
+			io.WriteString(w, `{"error": "Failed to get the user"}`)
 		}
 		return
 	}
@@ -60,7 +60,7 @@ func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := token.SignedString([]byte(config.Config.Jwt.SigningSecret))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, fmt.Sprintf(`{"error": "Failed to create token: %s"}`, err.Error()))
+		io.WriteString(w, `{"error": "Failed to create token"}`)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

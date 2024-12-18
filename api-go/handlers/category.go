@@ -14,13 +14,13 @@ func GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := repositories.GetCategories()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, fmt.Sprintf(`{"error": "%s"}`, err.Error()))
+		io.WriteString(w, `{"error": "Failed to get the categories"}`)
 		return
 	}
 	jsonResult, err := json.Marshal(categories)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, fmt.Sprintf(`{"error": "Failed to marshal result to JSON, error: %s"}`, err.Error()))
+		io.WriteString(w, `{"error": "Failed to marshal the result to JSON"}`)
 	}
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, string(jsonResult))
@@ -54,7 +54,7 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, fmt.Sprintf(`{"error": "Failed to parse the token, error: %s"}`, err.Error()))
+		io.WriteString(w, `{"error": "Failed to parse the token"}`)
 		return
 	}
 	var userID float64
@@ -76,7 +76,7 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "User lacks the necessary privileges to create a category"}`)
 		return
 	}
-	err = repositories.CreateCategory(ccr.Name, ccr.Color, ccr.Icon)
+	_, err = repositories.CreateCategory(ccr.Name, ccr.Color, ccr.Icon)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		io.WriteString(w, `{"error": "Failed to create the category"}`)

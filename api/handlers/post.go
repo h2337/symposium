@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jafarlihi/symposium/backend/config"
-	"github.com/jafarlihi/symposium/backend/models"
 	"github.com/jafarlihi/symposium/backend/repositories"
 	"io"
 	"net/http"
@@ -61,12 +60,12 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	var posts []*models.Post
+	var posts interface{}
 	if threadIDExists {
 		posts, err = repositories.GetPostsByThreadID(uint32(threadID), uint32(page), uint32(pageSize))
 	}
 	if userIDExists {
-		posts, err = repositories.GetPostsByUserID(uint32(userID), uint32(page), uint32(pageSize))
+		posts, err = repositories.GetPostsAndThreadsByUserID(uint32(userID), uint32(page), uint32(pageSize))
 	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

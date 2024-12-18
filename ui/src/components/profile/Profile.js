@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
-import { LOGIN } from "../../redux/actionTypes";
+import { useParams, Link, useHistory } from "react-router-dom";
+import { LOGIN, OPEN_THREAD } from "../../redux/actionTypes";
 import { Container, Row, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { getUser } from "../../api/user";
@@ -15,6 +15,7 @@ function Profile(props) {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(undefined);
   const [hasMorePosts, setHasMorePosts] = useState(true);
+  const history = useHistory();
   const { userID } = useParams();
   useEffect(() => {
     if (
@@ -64,6 +65,16 @@ function Profile(props) {
       .catch((e) => toast.error("Failed to fetch posts."));
   }
 
+  function openThread(postAndThread) {
+    props.onThreadOpen({
+      title: postAndThread.threadTitle,
+      id: postAndThread.threadID,
+      categoryID: postAndThread.threadCategoryID,
+      createdAt: postAndThread.threadCreatedAt,
+    });
+    history.push("/thread/" + postAndThread.threadID);
+  }
+
   return (
     <Container>
       <br></br>
@@ -91,6 +102,9 @@ function Profile(props) {
           {posts.map((v, i) => (
             <>
               <Card style={{ width: "100%" }}>
+                <Link onClick={() => openThread(v)}>
+                  <Card.Title>{v.threadTitle}</Card.Title>
+                </Link>
                 <Card.Body>
                   <div
                     dangerouslySetInnerHTML={{
@@ -111,6 +125,7 @@ function Profile(props) {
 const mapDispatchToProps = (dispatch) => ({
   onLogin: (username, id, email, access, token) =>
     dispatch({ type: LOGIN, username, id, email, access, token }),
+  onThreadOpen: (thread) => dispatch({ type: OPEN_THREAD, thread }),
 });
 
 export default connect(null, mapDispatchToProps)(Profile);

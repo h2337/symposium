@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { getUser } from "../../api/user";
 import { getPostsByUserID } from "../../api/post";
 import InfiniteScroll from "react-infinite-scroller";
+import DOMPurify from "dompurify";
 
 function Profile(props) {
   const [cookies, setCookie] = useCookies([]);
@@ -16,7 +17,6 @@ function Profile(props) {
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const { userID } = useParams();
   useEffect(() => {
-    Profile.postPage = 0;
     if (
       cookies.token !== undefined &&
       cookies.token.length > 0 &&
@@ -43,10 +43,12 @@ function Profile(props) {
         }
       })
       .catch((e) => toast.error("Failed to fetch the user."));
+    Profile.postPage = 0;
+    loadPosts();
   }, []);
 
   function loadPosts() {
-    if (Profile.postPage === undefined) Profile.postPage = 0;
+    if (Profile.postPage === undefined) return;
     getPostsByUserID(userID, Profile.postPage++, 20)
       .then((r) => {
         if (r.status === 200) {
@@ -62,7 +64,6 @@ function Profile(props) {
       .catch((e) => toast.error("Failed to fetch posts."));
   }
 
-  // TODO: Navigating out and back leads to no posts being shown
   return (
     <Container>
       <br></br>
@@ -90,7 +91,13 @@ function Profile(props) {
           {posts.map((v, i) => (
             <>
               <Card style={{ width: "100%" }}>
-                <Card.Body></Card.Body>
+                <Card.Body>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(v.content),
+                    }}
+                  ></div>
+                </Card.Body>
               </Card>
               <hr></hr>
             </>

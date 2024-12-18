@@ -27,6 +27,10 @@ function Header(props) {
     history.push("/admin");
   }
 
+  function handleProfileClick() {
+    history.push("/profile/" + props.userID);
+  }
+
   return (
     <>
       <Navbar bg="light">
@@ -39,7 +43,7 @@ function Header(props) {
               <Dropdown.Toggle variant="primary">
                 <img
                   src={
-                    process.env.API_URL + "/avatars/" + props.userId + ".jpg"
+                    process.env.API_URL + "/avatars/" + props.userID + ".jpg"
                   }
                   width="25"
                   height="25"
@@ -50,6 +54,9 @@ function Header(props) {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
+                <Dropdown.Item onClick={handleProfileClick}>
+                  Profile
+                </Dropdown.Item>
                 {props.access == "99" && (
                   <Dropdown.Item onClick={handleAdminPanelClick}>
                     Admin panel
@@ -73,7 +80,7 @@ function Header(props) {
 
 function mapStateToProps(state) {
   return {
-    userId: state.user.id,
+    userID: state.user.id,
     username: state.user.username,
     token: state.user.token,
     access: state.user.access,

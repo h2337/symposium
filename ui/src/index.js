@@ -4,6 +4,7 @@ import Feed from "./components/feed/Feed";
 import Admin from "./components/admin/Admin";
 import Header from "./components/layout/header/Header";
 import Thread from "./components/thread/Thread";
+import Profile from "./components/profile/Profile";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { Provider } from "react-redux";
@@ -25,6 +26,7 @@ ReactDOM.render(
             <Route path="/category/:categoryID" component={Feed} />
             <Route path="/thread/:threadID" component={Thread} />
             <Route path="/admin" component={Admin} />
+            <Route path="/profile/:userID" component={Profile} />
           </Switch>
         </Router>
       </CookiesProvider>

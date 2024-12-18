@@ -74,7 +74,7 @@ func CreatePost(userID uint32, threadID uint32, content string) (int64, error) {
 		logger.Log.Error("Failed to INSERT a new post, error: " + err.Error())
 		return 0, err
 	}
-	sql = "UPDATE threads SET post_count = post_count + 1 WHERE thread_id = $1"
+	sql = "UPDATE threads SET post_count = post_count + 1 WHERE id = $1"
 	_, err = database.Database.Exec(sql, threadID)
 	if err != nil {
 		logger.Log.Error("Failed to increment thread post_count, error: " + err.Error())

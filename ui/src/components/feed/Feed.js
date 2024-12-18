@@ -107,11 +107,6 @@ function Feed(props) {
     setHasMoreThreads(true);
   }
 
-  function newThreadCallback() {
-    resetFeed();
-    initialLoad();
-  }
-
   const classes = createUseStyles({
     feedThreadBox: {
       width: "100%",
@@ -145,17 +140,14 @@ function Feed(props) {
 
   return (
     <>
-      <Container fluid>
+      <Container>
         <Row>
           {!isMobile && (
             <Col xs="2">
               {isLoggedIn && (
                 <>
                   <br></br>
-                  <NewThread
-                    categories={categories}
-                    postCreateCallback={newThreadCallback}
-                  ></NewThread>
+                  <NewThread categories={categories}></NewThread>
                   <br></br>
                 </>
               )}
@@ -259,6 +251,9 @@ function Feed(props) {
                               (category) => category.id === v.categoryID
                             ).name
                           }
+                        </div>
+                        <div className="ml-auto">
+                          <i className="fa fa-comments"></i> {v.postCount}
                         </div>
                       </Row>
                     </Container>

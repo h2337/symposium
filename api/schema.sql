@@ -18,7 +18,7 @@ CREATE TABLE threads (
     id serial NOT NULL,
     user_id integer NOT NULL,
     title character varying NOT NULL,
-    post_count integer NOT NULL,
+    post_count integer NOT NULL DEFAULT 0,
     category_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT now(),
     PRIMARY KEY (id),

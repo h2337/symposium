@@ -15,6 +15,7 @@ public class Post {
     private Long id;
     private Long threadId;
     private Long userId;
+    private Long postNumber;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -7,17 +7,11 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE posts (
+CREATE TABLE categories (
     id serial NOT NULL,
-    thread_id integer NOT NULL,
-    user_id integer NOT NULL,
-    post_number integer NOT NULL,
-    content text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone,
-    PRIMARY KEY (id),
-    FOREIGN KEY (thread_id) REFERENCES threads (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    name character varying NOT NULL UNIQUE,
+    color character varying(6) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE threads (
@@ -31,9 +25,16 @@ CREATE TABLE threads (
     FOREIGN KEY (category_id) REFERENCES categories (id)
 );
 
-CREATE TABLE categories (
+CREATE TABLE posts (
     id serial NOT NULL,
-    name character varying NOT NULL UNIQUE,
-    color character varying(6) NOT NULL,
-    PRIMARY KEY (id)
+    thread_id integer NOT NULL,
+    user_id integer NOT NULL,
+    post_number integer NOT NULL,
+    content text NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id),
+    FOREIGN KEY (thread_id) REFERENCES threads (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
+

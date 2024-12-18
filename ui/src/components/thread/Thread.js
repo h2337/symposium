@@ -67,6 +67,7 @@ function Thread(props) {
           <Container>
             <Row>
               <Col style={{ backgroundColor: "#" + category.color }}>
+                <br></br>
                 <Badge
                   pill
                   style={{ margin: "auto", display: "table" }}
@@ -77,12 +78,13 @@ function Thread(props) {
                 <h3 style={{ margin: "auto", display: "table" }}>
                   <Badge variant="light">{thread.title}</Badge>
                 </h3>
+                <br></br>
               </Col>
             </Row>
           </Container>
           <br></br>
           <Card>
-            <Card.Body>This is some text within a card body.</Card.Body>
+            <Card.Body>Some text</Card.Body>
           </Card>
         </>
       )}

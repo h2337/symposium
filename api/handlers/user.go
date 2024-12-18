@@ -49,7 +49,7 @@ type accountCreationRequest struct {
 	Password string `json:"password"`
 }
 
-func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) {
 	// TODO: Add validation
 	var acr accountCreationRequest
 	err := json.NewDecoder(r.Body).Decode(&acr)

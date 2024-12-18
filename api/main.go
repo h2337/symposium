@@ -18,7 +18,7 @@ func main() {
 	websocket.InitChannels()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/token", handlers.CreateTokenHandler).Methods("POST")
+	router.HandleFunc("/token", handlers.CreateToken).Methods("POST")
 	router.HandleFunc("/category", handlers.GetCategories).Methods("GET")
 	router.HandleFunc("/category", handlers.CreateCategory).Methods("POST")
 	router.HandleFunc("/category", handlers.DeleteCategory).Methods("DELETE")
@@ -27,7 +27,7 @@ func main() {
 	router.HandleFunc("/thread/{id}", handlers.GetThread).Methods("GET")
 	router.HandleFunc("/post", handlers.CreatePost).Methods("POST")
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
-	router.HandleFunc("/user", handlers.CreateUserHandler).Methods("POST")
+	router.HandleFunc("/user", handlers.CreateUser).Methods("POST")
 	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
 	router.HandleFunc("/user/avatar", handlers.UploadAvatar).Methods("POST")
 	router.HandleFunc("/ws/thread", websocket.HandleWebsocket)

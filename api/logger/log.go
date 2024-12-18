@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-var Log = logging.MustGetLogger("ms-liquibase-checker")
+var Log = logging.MustGetLogger("symposium")
 
 func InitLogger() {
 	backend := logging.NewLogBackend(os.Stdout, "", 0)

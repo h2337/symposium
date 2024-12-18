@@ -23,7 +23,7 @@ type tokenCreationResponse struct {
 	User  models.User `json:"user"`
 }
 
-func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
+func CreateToken(w http.ResponseWriter, r *http.Request) {
 	var tcr tokenCreationRequest
 	err := json.NewDecoder(r.Body).Decode(&tcr)
 	if err != nil {

@@ -9,10 +9,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -42,5 +41,14 @@ public class PostController {
         if (post == null)
             return new ResponseEntity<>(response.put("error", "Failed to create the post").toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity getPosts(@RequestParam Integer threadId, @RequestParam Integer page, @RequestParam Integer pageSize) {
+        JSONObject response = new JSONObject();
+        if (page == null || pageSize == null)
+            return new ResponseEntity<>(response.put("error", "Page and/or pageSize is missing").toString(), HttpStatus.BAD_REQUEST);
+        List<Post> posts = postService.getPostsByThreadId(threadId, page, pageSize);
+        return new ResponseEntity<>(response.put("posts", posts).toString(), HttpStatus.OK);
     }
 }

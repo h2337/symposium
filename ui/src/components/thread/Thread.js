@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Container, Row, Col, Badge, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { loadThread } from "../../api/thread";
 import { loadCategories } from "../../api/category";
+import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 
 function Thread(props) {
   const [thread, setThread] = useState(undefined);
@@ -62,7 +63,28 @@ function Thread(props) {
           animation="border"
         />
       ) : (
-        thread.title + category.name
+        <>
+          <Container>
+            <Row>
+              <Col style={{ backgroundColor: "#" + category.color }}>
+                <Badge
+                  pill
+                  style={{ margin: "auto", display: "table" }}
+                  variant="light"
+                >
+                  {category.name}
+                </Badge>
+                <h3 style={{ margin: "auto", display: "table" }}>
+                  <Badge variant="light">{thread.title}</Badge>
+                </h3>
+              </Col>
+            </Row>
+          </Container>
+          <br></br>
+          <Card>
+            <Card.Body>This is some text within a card body.</Card.Body>
+          </Card>
+        </>
       )}
     </>
   );

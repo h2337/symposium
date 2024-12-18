@@ -101,23 +101,18 @@ function Profile(props) {
         >
           {posts.map((v, i) => (
             <>
-              <Card style={{ width: "100%" }}>
-                <Link
-                  style={{ marginLeft: "10px" }}
-                  onClick={() => openThread(v)}
-                >
-                  {v.threadTitle}
-                </Link>
-                <hr></hr>
-                <Card.Body>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(v.content),
-                    }}
-                  ></div>
-                </Card.Body>
-              </Card>
-              <br></br>
+              <Link
+                style={{ marginLeft: "10px" }}
+                onClick={() => openThread(v)}
+              >
+                {v.threadTitle}
+              </Link>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(v.content),
+                }}
+              ></div>
+              <hr></hr>
             </>
           ))}
         </InfiniteScroll>

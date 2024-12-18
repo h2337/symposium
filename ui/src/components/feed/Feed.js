@@ -111,6 +111,8 @@ function Feed(props) {
     feedThreadBox: {
       width: "100%",
       cursor: "pointer",
+      transition: "0.3s",
+      borderRadius: "5px",
       "&:hover": {
         backgroundColor: "#f5f5f5",
       },
@@ -218,7 +220,7 @@ function Feed(props) {
                     onClick={() => openThread(v)}
                   >
                     <Container fluid>
-                      <Row>
+                      <Row style={{ marginBottom: "5px" }}>
                         <img
                           src={
                             "http://" +
@@ -258,7 +260,6 @@ function Feed(props) {
                       </Row>
                     </Container>
                   </div>
-                  <hr></hr>
                 </div>
               ))}
               {!hasMoreThreads && (

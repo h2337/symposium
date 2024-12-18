@@ -155,33 +155,48 @@ function Thread(props) {
               >
                 {posts.map((v, i) => (
                   <>
-                    <Card style={{ width: "100%" }}>
-                      <Card.Body>
-                        <Link to={"/profile/" + v.userID}>
-                          <img
-                            src={
-                              "http://" +
-                              process.env.API_URL +
-                              "/avatars/" +
-                              v.userID +
-                              ".jpg"
-                            }
-                            width="50"
-                            height="50"
-                            style={{ borderRadius: "50%" }}
-                          />
-                          &nbsp;
-                          {v.username}
-                        </Link>
-                        <hr></hr>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(v.content),
-                          }}
-                        ></div>
-                      </Card.Body>
-                    </Card>
-                    <br></br>
+                    <Container>
+                      <Row>
+                        <Col xs="1">
+                          <Link to={"/profile/" + v.userID}>
+                            <img
+                              src={
+                                "http://" +
+                                process.env.API_URL +
+                                "/avatars/" +
+                                v.userID +
+                                ".jpg"
+                              }
+                              width="50"
+                              height="50"
+                              style={{ borderRadius: "50%" }}
+                            />
+                          </Link>
+                        </Col>
+                        <Col xs="11">
+                          <div
+                            style={{
+                              fontSize: "0.8em",
+                              fontWeight: "bold",
+                              marginBottom: "10px",
+                            }}
+                          >
+                            <Link
+                              to={"/profile/" + v.userID}
+                              style={{ textDecoration: "none", color: "gray" }}
+                            >
+                              {v.username}
+                            </Link>
+                          </div>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(v.content),
+                            }}
+                          ></div>
+                        </Col>
+                      </Row>
+                    </Container>
+                    <hr></hr>
                   </>
                 ))}
               </InfiniteScroll>

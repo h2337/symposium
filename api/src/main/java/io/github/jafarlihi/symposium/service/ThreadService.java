@@ -1,6 +1,7 @@
 package io.github.jafarlihi.symposium.service;
 
 import io.github.jafarlihi.symposium.model.Thread;
+import io.github.jafarlihi.symposium.repository.PostRepository;
 import io.github.jafarlihi.symposium.repository.ThreadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,8 @@ public class ThreadService {
 
     @Autowired
     private ThreadRepository threadRepository;
+    @Autowired
+    private PostRepository postRepository;
 
     public List<Thread> getThreads(Integer page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
@@ -37,6 +40,7 @@ public class ThreadService {
     }
 
     public void deleteThread(Long threadId) {
+        postRepository.deleteByThreadId(threadId);
         threadRepository.deleteById(threadId);
     }
 }

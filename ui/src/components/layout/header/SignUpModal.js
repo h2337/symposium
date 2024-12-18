@@ -3,7 +3,7 @@ import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { createAccount } from "../../../api/account";
 
-function SignUp() {
+function SignUpModal() {
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -128,4 +128,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignUpModal;

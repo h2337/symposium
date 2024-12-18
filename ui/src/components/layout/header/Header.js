@@ -1,8 +1,8 @@
 import React from "react";
 import { Navbar, Nav, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import SignUp from "./SignUp";
-import SignIn from "./SignIn";
+import SignUpModal from "./SignUpModal";
+import SignInModal from "./SignInModal";
 import { toast } from "react-toastify";
 import { LOGOUT } from "../../../redux/actionTypes";
 import { useHistory, Link } from "react-router-dom";
@@ -43,9 +43,9 @@ function Header(props) {
   } else {
     userButtons = (
       <>
-        <SignUp></SignUp>
+        <SignUpModal></SignUpModal>
         &nbsp;
-        <SignIn></SignIn>
+        <SignInModal></SignInModal>
       </>
     );
   }

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { LOAD_CATEGORIES } from "../../redux/actionTypes";
 import { loadCategories, createCategory } from "../../api/category";
 import { toast } from "react-toastify";
+import DeleteCategoryModal from "./DeleteCategoryModal";
 
 function Categories(props) {
   const [name, setName] = useState("");
@@ -68,6 +69,7 @@ function Categories(props) {
       .catch((e) => toast.error("Failed to create a new category, try again."));
   }
 
+  // TODO: Refactor CreateCategory to its own modal component
   return (
     <Container>
       <Row>
@@ -132,7 +134,7 @@ function Categories(props) {
                 <div style={{ float: "right" }}>
                   <Button variant="primary">Edit</Button>
                   &nbsp;
-                  <Button variant="danger">Delete</Button>
+                  <DeleteCategoryModal name={v.name} id={v.id} />
                 </div>
               </div>
               <hr></hr>

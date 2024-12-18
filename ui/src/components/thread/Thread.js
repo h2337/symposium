@@ -167,10 +167,12 @@ function Thread(props) {
                 <>
                   <br></br>
                   <br></br>
-                  <ReplyModal
-                    threadID={threadID}
-                    postReplyCallback={postReplyCallback}
-                  />
+                  <div style={{ float: "right" }}>
+                    <ReplyModal
+                      threadID={threadID}
+                      postReplyCallback={postReplyCallback}
+                    />
+                  </div>
                 </>
               )}
             </Col>

@@ -179,11 +179,11 @@ function Feed(props) {
             {isMobile && (
               <>
                 {isLoggedIn && (
-                  <>
+                  <div style={{ float: "right" }}>
                     <br></br>
                     <NewThreadModal categories={categories}></NewThreadModal>
                     <br></br>
-                  </>
+                  </div>
                 )}
                 <br></br>
                 <DropdownButton title="Categories">

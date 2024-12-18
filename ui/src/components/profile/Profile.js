@@ -7,8 +7,9 @@ import { createUseStyles } from "react-jss";
 import { useCookies } from "react-cookie";
 import InfiniteScroll from "react-infinite-scroller";
 import DOMPurify from "dompurify";
+import $ from "jquery";
 import { LOGIN, OPEN_THREAD } from "../../redux/actionTypes";
-import { getUser } from "../../api/user";
+import { getUser, uploadAvatar } from "../../api/user";
 import { getPostsByUserID } from "../../api/post";
 
 function Profile(props) {
@@ -82,6 +83,39 @@ function Profile(props) {
     return d.toDateString() + " " + d.getHours() + ":" + d.getMinutes();
   }
 
+  function handleAvatarUpload(avatar) {
+    if (avatar.size > 1024000) {
+      toast.error("Uploaded avatar image can't be more than 1MB.");
+      return;
+    }
+    if (avatar.type === undefined) return;
+    if (avatar.type != "image/jpeg" && avatar.type != "image/png") {
+      toast.error("Uploaded file is not a JPEG or PNG file.");
+      return;
+    }
+    uploadAvatar(props.token, avatar)
+      .then((r) => {
+        if (r.status === 200) {
+          window.location.reload(true);
+        } else {
+          toast.error("Failed to change the avatar, try again.");
+        }
+      })
+      .catch((e) => toast.error("Failed to change the avatar, try again."));
+  }
+
+  function handleChangeAvatarClick() {
+    const $input = $('<input type="file" accept="image/png, image/jpeg">');
+
+    $input
+      .appendTo("body")
+      .hide()
+      .click()
+      .on("input", (e) => {
+        handleAvatarUpload($(e.target)[0].files[0]);
+      });
+  }
+
   const classes = createUseStyles({
     changeAvatarButton: {
       width: "45px",
@@ -106,15 +140,18 @@ function Profile(props) {
       <Row>
         <div>
           <img
-            src={
-              "http://" + process.env.API_URL + "/avatars/" + userID + ".jpg"
-            }
+            src={"http://" + process.env.API_URL + "/avatars/" + userID}
             width="100"
             height="100"
             style={{ borderRadius: "50%" }}
           />
           {props.userID === userID && (
-            <div className={classes.changeAvatarButton}>Change</div>
+            <div
+              className={classes.changeAvatarButton}
+              onClick={handleChangeAvatarClick}
+            >
+              Change
+            </div>
           )}
         </div>
         <div style={{ paddingTop: "50px", paddingLeft: "50px" }}>
@@ -154,8 +191,7 @@ function Profile(props) {
                           "http://" +
                           process.env.API_URL +
                           "/avatars/" +
-                          v.userID +
-                          ".jpg"
+                          v.userID
                         }
                         width="50"
                         height="50"

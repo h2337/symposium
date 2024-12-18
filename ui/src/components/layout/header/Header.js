@@ -43,11 +43,7 @@ function Header(props) {
               <Dropdown.Toggle variant="primary">
                 <img
                   src={
-                    "http://" +
-                    process.env.API_URL +
-                    "/avatars/" +
-                    props.userID +
-                    ".jpg"
+                    "http://" + process.env.API_URL + "/avatars/" + props.userID
                   }
                   width="25"
                   height="25"

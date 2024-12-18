@@ -136,9 +136,14 @@ function Thread(props) {
       ) : (
         <Container>
           <Row>
-            <Col xs="1"></Col>
-            <Col xs="11">
-              <Badge style={{ backgroundColor: "#" + category.color }}>
+            <Col xs="2"></Col>
+            <Col xs="10">
+              <Badge
+                style={{
+                  backgroundColor: "#" + category.color,
+                  marginTop: "20px",
+                }}
+              >
                 <span style={{ color: "white" }}>{category.name}</span>
               </Badge>{" "}
               <span
@@ -163,15 +168,15 @@ function Thread(props) {
           </Row>
           <br></br>
           <Row>
-            {!isMobile && isLoggedIn && (
-              <Col xs="1">
+            <Col xs="2">
+              {!isMobile && isLoggedIn && (
                 <Reply
                   threadID={threadID}
                   postReplyCallback={postReplyCallback}
                 />
-              </Col>
-            )}
-            <Col xs="11">
+              )}
+            </Col>
+            <Col xs="10">
               <InfiniteScroll
                 loadMore={loadPosts}
                 hasMore={hasMorePosts}
@@ -191,8 +196,7 @@ function Thread(props) {
                                 "http://" +
                                 process.env.API_URL +
                                 "/avatars/" +
-                                v.userID +
-                                ".jpg"
+                                v.userID
                               }
                               width="50"
                               height="50"

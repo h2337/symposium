@@ -227,8 +227,7 @@ function Feed(props) {
                             "http://" +
                             process.env.API_URL +
                             "/avatars/" +
-                            v.userID +
-                            ".jpg"
+                            v.userID
                           }
                           width="40"
                           height="40"

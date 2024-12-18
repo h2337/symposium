@@ -30,7 +30,7 @@ function Reply(props) {
   return (
     <>
       <Button variant="outline-primary" onClick={handleShow}>
-        Reply
+        <i className="fa fa-reply"></i> Reply
       </Button>
 
       <Modal size="lg" show={show} onHide={handleClose}>

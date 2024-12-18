@@ -29,6 +29,7 @@ func main() {
 	router.HandleFunc("/post", handlers.GetPosts).Methods("GET")
 	router.HandleFunc("/user", handlers.CreateUserHandler).Methods("POST")
 	router.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
+	router.HandleFunc("/user/avatar", handlers.UploadAvatar).Methods("POST")
 	router.HandleFunc("/ws/thread", websocket.HandleWebsocket)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 

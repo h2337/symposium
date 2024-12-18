@@ -40,7 +40,7 @@ function NewThread(props) {
   return (
     <>
       <Button variant="outline-primary" onClick={handleShow}>
-        New Thread
+        <i className="fa fa-plus"></i> New Thread
       </Button>
 
       <Modal size="lg" show={show} onHide={handleClose}>

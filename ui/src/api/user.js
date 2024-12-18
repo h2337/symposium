@@ -10,3 +10,13 @@ export function createUser(username, email, password) {
     body: JSON.stringify({ username, email, password }),
   });
 }
+
+export function uploadAvatar(token, avatar) {
+  let formData = new FormData();
+  formData.append("token", token);
+  formData.append("avatar", avatar);
+  return fetch("http://" + process.env.API_URL + "/user/avatar", {
+    method: "POST",
+    body: formData,
+  });
+}

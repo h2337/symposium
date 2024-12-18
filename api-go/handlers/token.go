@@ -1,7 +1,13 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/jafarlihi/symposium/backend/config"
+	"github.com/jafarlihi/symposium/backend/repositories"
+	"golang.org/x/crypto/bcrypt"
 	"io"
 	"net/http"
 )
@@ -30,6 +36,33 @@ func CreateTokenHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"error": "Password field is missing"}`)
 		return
 	}
+	password, userID, err := repositories.GetPasswordAndUserIDByUsername(tcr.Username)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, `{"error": "User does not exist"}`)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, fmt.Sprintf(`{"error": "%s"}`, err.Error()))
+		}
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(tcr.Password))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, `{"error": "Wrong password"}`)
+		return
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"userID": userID,
+	})
+	tokenString, err := token.SignedString([]byte(config.Config.Jwt.SigningSecret))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, fmt.Sprintf(`{"error": "Failed to create token: %s"}`, err.Error()))
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, `{"token": "whatever"}`)
+	io.WriteString(w, fmt.Sprintf(`{"token": "%s"}`, tokenString))
 }

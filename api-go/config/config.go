@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+type jwtConfig struct {
+	SigningSecret string `json:"signingSecret"`
+}
+
 type databaseConfig struct {
 	Url string `json:"url"`
 }
@@ -17,6 +21,7 @@ type httpServerConfig struct {
 }
 
 type configuration struct {
+	Jwt        jwtConfig        `json:"jwt"`
 	Database   databaseConfig   `json:"database"`
 	HttpServer httpServerConfig `json:"httpServer"`
 }

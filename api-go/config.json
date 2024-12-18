@@ -1,4 +1,7 @@
 {
+    "jwt": {
+        "signingSecret": "8b01a914-9289-47ee-9284-1d87f5de55e4"
+    },
     "database": {
         "url": "postgres://postgres:password@localhost:5432/postgres?sslmode=disable"
     },
